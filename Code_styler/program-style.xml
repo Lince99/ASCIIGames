@@ -1,0 +1,91 @@
+<!-- Basso Nicola aka Lince99 -->
+<!-- This file define the style of the code -->
+<language name="C99" extensions=".c, .h">
+	<!-- comments must follow these style rules for more readability -->
+	<comments require="1">
+		<!-- describe where does the single comment go -->
+		<!-- position rules:
+              before = before the name/code
+              in = in the same line of the name/code
+              after = after the line of name/code
+          -->
+		<position> "top" </position>
+		<startChar> "/* " </start>
+		<mid> " * " <mid>
+		<end> " */" </end>
+	</comments>
+
+	<!-- following these rules means that your code is sharable -->
+	<!-- text rules:
+	      A = all alphabet characters (!n)
+          n = accept numbers
+	      ! = negate the next char rule
+	      l = lowercase (!U)
+	      U = uppercase (!l)
+	      _ = accept only underscore, no spaces allowed. (!s)
+          c = accept CamelCase mode (!_) camelcase include starting maiusc
+          t = accept tab character. (!s)
+	      s = accept only space as word-separator, no underscore accepted. (!_)
+          m = accept both space and tabs (ts, where s reactivate spaces)
+	      S = accept special characters like !£$$%&/()=
+	  -->
+	<code require="1">
+        <!-- INDENTATION STYLE -->
+		<indend require="1">
+			<!-- accept: tab (t), space (s), mixed (m) -->
+			<type> "s" </type>
+			<count> "4" </count>
+            <!-- required space between operators like a = b, spacing = 1 -->
+            <spacing> "1" </spacing>
+            <!-- position rules:
+                  align = require the same char position as upper param line
+                  one = accept only one parameter per line
+                  none = no rules required
+              -->
+            <params> "align" <params>
+            <vars> "one" </vars>
+		</indend>
+		<!-- GLOBALS -->
+		<global require="1">
+            <startChar> "U" </start>
+            <!-- accept UPPERCASE, no numbers, no CamelCase and no specials -->
+            <name> "UA_!S" </name>
+		</global>
+        <!-- FILENAMES -->
+        <files require="1">
+            <dir>
+                <startChar> "U" </start>
+                <name> "Anl_" </name>
+            </dir>
+            <source>
+                <startChar> "l" </start>
+                <name> "Al_" </name>
+            </source>
+            <libraries>
+                <startChar> "l" </start>
+                <name> "Al_" </name>
+            </libraries>
+        </files>
+		<!-- CLASSES/FUNCTIONS -->
+        <function require="1">
+            <startCharChar> "l" </startChar>
+            <name> "Al_" </name>
+            <!-- brackets style -->
+            <bracket>
+                <!-- accept: yes, no -->
+                <required> "yes" </required>
+                <open>
+                    <position> "in" </position>
+                </open>
+                <close>
+                    <position> "after" </position>
+                </close>
+            </bracket>
+        </function>
+		<!-- VARIABLES -->
+        <var require="1">
+            <startCharChar> "l" </startChar>
+            <name> "Al_" </name>
+        </var>
+	</code>
+</language>
