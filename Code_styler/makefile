@@ -20,9 +20,7 @@ help:
 
 compile:
 	@echo " - - Compiling... - -"
-	ccred
 	$(CC) -o $(EXC) $(SRC)
-	ccend
 	@strip $(EXC)
 	@echo " - - Memory occupied by this program: - -"
 	@size $(EXC)
