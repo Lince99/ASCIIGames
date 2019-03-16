@@ -59,19 +59,33 @@ https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
  * for any supported color of text and background
  */
 
+#ifndef COLORS_H
+#define COLORS_H
 
+
+
+//move cursor
+#define gotoxy(x,y) printf("\033[%d;%dH", (x), (y))
+/*void gotoxy(int x, int y) {
+    printf("\033[%d;%dH", x, y);
+}*/
+
+//clear the screen
+#ifndef ANSI_CLEAN
+    #define ANSI_CLEAN "\x1b[H\x1b[J"
+#endif
 
 //font colors (foreground)
 #ifndef ANSI_BLACK
-    #define ANSI_BLACK     "\x1b[30m"
+    #define ANSI_BLACK "\x1b[30m"
 #endif
 
 #ifndef ANSI_RED
-    #define ANSI_RED     "\x1b[31m"
+    #define ANSI_RED "\x1b[31m"
 #endif
 
 #ifndef ANSI_GREEN
-    #define ANSI_GREEN   "\x1b[32m"
+    #define ANSI_GREEN  "\x1b[32m"
 #endif
 
 #ifndef ANSI_YELLOW
@@ -161,3 +175,5 @@ https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
 #ifndef ANSI_RESET
     #define ANSI_RESET   "\x1b[0m"
 #endif
+
+#endif //COLORS_H

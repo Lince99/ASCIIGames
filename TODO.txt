@@ -1,4 +1,4 @@
-FOR GAMES:
+TYPE OF GAMES:
 - Create any type of Text Adventure Game
 - Create some Card Game
 - Create Chess Game
@@ -9,7 +9,8 @@ FOR GAMES:
 - Possibly some Player-vs-AI and AI-vs-AI modes on all games
 - Create some Visual Story Games (like a simple rainbow that scroll on the terminal, why not)
 
-FOR UTILITIES:
-- create xml parser for program styling
-- add modify code util with xml style
-- add verify code
+Zeros game:
+Rainbooooowwwwwwwwssssss
+
+First game:
+GAME_OF_CELLS

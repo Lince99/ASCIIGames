@@ -6,6 +6,9 @@
  * this library contains functions that manage and check input from stdin
  */
 
+#ifndef INPUT_CHECK_H
+#define INPUT_CHECK_H
+
 #include <stdio.h> //printf
 #include <stdlib.h> //atoi, malloc
 #include <string.h> //strlen
@@ -21,6 +24,7 @@
 void getInt(int* x);
 void getLimitInt(int* x, int min, int max);
 void getFloat(float *x);
+int getChar(char *x);
 int checkNumber(char* str, size_t dim);
 int getString(char** str);
 
@@ -29,7 +33,7 @@ int getString(char** str);
 /*
  * procedure that request and control the user input from stdin
  * using getString() function (defined in signatures sector).
- * The parameter requires the & operand to get the address of the variable x
+ * The param requires the & operand to get the address of the variable x
  */
 void getInt(int* x) {
     char* str = NULL; /* the user input will be saved here */
@@ -92,6 +96,37 @@ void getFloat(float* x) {
     } while(!valid);
 
     free(str);
+}
+
+/*
+ * function that require the address of the char to save.
+ * It takes the first stdin char wrote by user, ignoring all next chars.
+ * Also It returns the integer value of the char
+ */
+int getChar(char* x) {
+    char* str = NULL; /* the user input will be saved here */
+    register int strDim = 0; /* length of the user input with fast access */
+    register int valid = 0; /* flag that can only be 0 = not valid, 1 = valid */
+    int digit = 0; /* conversion of char to integer following ascii table */
+
+    //re-request the user input until it's a char
+    do {
+        strDim = getString(&str);
+        if(strDim <= 0)
+            valid = 0;
+        //takes the first char of the input
+        else {
+            *x = str[0];
+            valid = 1;
+        }
+    } while(!valid);
+    free(str);
+    //covert char to int
+    digit = (int)*x;
+    if(digit >= 48 && digit <= 57)
+        digit -= 48;
+
+    return digit;
 }
 
 /*
@@ -159,3 +194,5 @@ int getString(char** str) {
     //return the length of the valid string
     return lung;
 }
+
+#endif //INPUT_CHECK_H
