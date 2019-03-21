@@ -26,4 +26,4 @@ Tic Tac Toe is a turn based tactical game where the player have to align 3 of hi
 
 * "q" to quit
 * arrows or WASD to change cursor position
-* ENTER to insert your symbol
+* ENTER to insert your symbol or continue on menu
