@@ -1,22 +1,13 @@
-<div style="margin: auto; text-align: center; font-weight: bold; font-size:17px">
-    <p style="display:inline; font-size:30px; color:red">
-        GAME OF CELLS
-    </p><br>
-    <p style="display:inline;">Based on the classical</p>
-    <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" style="display:inline;">
-        Conway's Game of Life (1970)
-    </a>
-    <p style="display:inline;">,<br>
-        but this time It's really a game!
-    </p>
-</div>
+# GAME OF CELLS <!-- INSERT LOGO HERE -->
+#### Based on the classical <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life (1970)</a>,<br>but this time you are one of the cells!
+
 
 <!-- INSERT SCREENSHOT HERE -->
 
 ---
 
-## Description
-<div style="font-size:15px">
+### Index of game modes
+<div>
     "Game of Cells" has several game modes:
     <ol>
         <li> Singleplayer
@@ -45,26 +36,10 @@
 
 ## Installation guide
 
-Download this repo's ZIP or fork it, and copy-paste following code snippets
+Download this repo's ZIP, or fork it and then copy-paste following code snippets
 (personalize repo directory name first)
 
-```bash
-#create a new folder to save Repos, then move inside it
-mkdir Repositories
-cd Repositories
-git clone https://github.com/Lince99/ASCIIGames.git
-checkout main-dev
-```
-Then use make to compile the code
-```bash
-make compile
-#or use compile_optimize if you have a powerful hardware
-```
 
-To run it, simply use
-```bash
-./Game_of_cells
-```
 
 ### Dependencies
 
@@ -103,6 +78,8 @@ SO, possible states of a cell are:<br>
 
 ## Game modes
 
+
+
 ### Singleplayer
 
 ##### Tutorial
@@ -111,11 +88,14 @@ In this mode you can learn and practice with various rules and patterns
 ##### Highscore
 This gamemode permit to test your skills in this game,<br>
 then your scoreboard can be uploaded to check who is the best at this game!
+
 ##### Sandbox
 Here you can destroy Game of Cells
+
 ##### Waves
 This gamemode try to kill you with patterns of generated waves, <br>faster and faster,<br>
 too fast that will become unpredictable to avoid the death.
+
 
 
 ### Multiplayer
@@ -134,6 +114,8 @@ you can't move inside it without these.
 ##### Team Deathseekers
 Red vs Blue, classic team deathmatch where win depends on the kills counter.
 
+
+
 ### 0-player
 
 ##### Map Generation
@@ -145,3 +127,29 @@ Only "pause/stop" or "prev/next draw" options can be used
 
 ##### Music
 What can you do with a sequence of bits and a bitrate?<br>(with colors you can add different tones)
+
+
+---
+
+## License
+_MIT License_
+
+_Copyright (c) 2018 Basso Nicola_
+
+_Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:_
+
+_The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software._
+
+_THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE._

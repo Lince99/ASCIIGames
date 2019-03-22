@@ -11,11 +11,37 @@
  * main
  */
 
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char** argv) {
 
-    /* TODO code */
+
+int main(int argc, char** argv) {
+    WINDOW *main_w;
+    int term_y, term_x;
+    int main_y, main_x;
+
+    //initialize Ncurses
+    initscr();
+
+    //get current terminal window max coordinates
+    getmaxyx(stdscr, term_y, term_x);
+
+    main_y = term_y;
+    main_x = term_x;
+
+    //create the main window
+    main_w = newwin(term_y, term_x, main_y, main_x);
+
+    //wait user input
+    getch();
+
+    //free Ncurses window
+    delwin(main_w);
+
+    //stop Ncurses
+    endwin();
+
     return 0;
 }

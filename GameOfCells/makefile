@@ -5,6 +5,8 @@ RM=rm -f
 
 # name of the source (include folders if the source isn't in the current dir)
 SRC=Game_of_cells.c
+#other libraries
+LDFLAGS=-lncurses
 # name of the executable
 EXC=Game_of_cells
 # params used in the program
@@ -41,7 +43,6 @@ C_FOLD_OPT+= -freorder-functions
 # - - - folding optimizations - - -
 #-fipa-icf -fipa-icf-functions -fipa-icf-variables -fipa-reference -fipa-pta
 #-foptimize-sibling-calls -freorder-blocks -freorder-functions
-
 
 
 all: clean_reset compile
