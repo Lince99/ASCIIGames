@@ -9,28 +9,17 @@
  * SOFTWARE.
  */
 /*
- * Main
+ * various procedures and functions that take cares about windows
  */
 
 #include <ncurses.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-int main(int argc, char** argv) {
+int HAS_COLORS = 1;
 
-    //initialize Ncurses
-    initscr();
 
-    //test colors
-    if(!has_colors()) {
-        //stop Ncurses because without colors you can't play it
-        endwin();
-        perror("Your terminal does not support colors!\n");
-        exit(1);
-    }
-
-    //stop Ncurses
-    endwin();
-
-    return 0;
+/*
+//test colors
+if(!has_colors()) {
+    HAS_COLORS = 0;
 }
+*/

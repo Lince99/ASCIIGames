@@ -7,45 +7,77 @@
 ---
 
 ### Index of game modes
-<div>
-    "Game of Cells" has several game modes:
-    <ol>
-        <li> Singleplayer
-        <ul>
-            <li> Tutorial
-            <li> Highscore
-            <li> Sandbox
-            <li> Waves
-        </ul>
-        <li> Multiplayer (or vs bots)
-        <ul>
-            <li> Last-man Standing
-            <li> Sector Conquest
-            <li> Team Deathseekers
-        </ul>
-        <li> 0-player
-        <ul>
-            <li> Map Generation
-            <li> Screensaver
-            <li> Music
-        </ul>
-    </ol>
-</div>
+
+*Game of Cells* has several game modes:
+1. **Singleplayer**
+    - Tutorial
+    - Highscore
+    - Sandbox
+    - Waves
+1. **Multiplayer** (or vs bots)
+    - Last-man Standing
+    - Sector Conquest
+    - Team Deathseekers
+1. **0-player**
+    - Map Generation
+    - Screensaver
+    - Music
 
 ---
 
 ## Installation guide
 
-Download this repo's ZIP, or fork it and then copy-paste following code snippets
-(personalize repo directory name first)
+### RELEASES
+
+Choose any executable from [releases](https://github.com/Lince99/ASCIIGames/tree/dev/GameOfCells/releases) folder, simple as is.
+<br><br>
+#### CONTRIBUTORS ONLY
+
+For beginners I think MarcDiethelm guide is a good start: [HowToContribute](https://github.com/MarcDiethelm/contributing/blob/master/README.md).<br>
+Or use Joshnh list of commonly used Git commands, which is also useful for beginners:
+[HowToGit](https://github.com/joshnh/Git-Commands).<br>
+Or this official github guide:
+[Contributing on Github](https://github.com/MarcDiethelm/contributing/blob/master/README.md).
+
+**Dependencies**
+
+- gcc for compile:
+```bash
+#For Ubuntu-based machines
+sudo apt-get update && sudo apt-get install gcc -y
+```
+- make for build:
+```bash
+#For Ubuntu-based machines
+sudo apt-get install make -y
+```
+- git for contribute:
+```bash
+#For Ubuntu-based machines
+sudo apt-get install git -y
+```
 
 
+**Step by Step guide** <br>
 
-### Dependencies
+First clone this repo:
+```bash
+git clone https://github.com/Lince99/ASCIIGames
+git checkout master #or dev or everything else you want work onto
+```
+Do something useful following code style of the project.<br>
+Then push to your local branch:
+```bash
+#go on you higher level of project directory
+git add .
+git commit -am "Some useful and descriptive message"
+git push upstream master #or dev or everything else
+```
 
-<code style="color:#66ffff;">gcc</code> for compile<br>
-<code style="color:#66ffff;">make</code> for build<br>
-<code style="color:#66ffff;">git</code> for contribute<br>
+And when you're ready, create a new PR (push request):
+```bash
+git push -u origin master
+```
 
 ---
 
@@ -53,31 +85,38 @@ Download this repo's ZIP, or fork it and then copy-paste following code snippets
 
 ##### General rules:
 
-Conway Game of Life rules, aka "underpopulation", "next generation", "overpopulation" and "reproduction" <br>
-is condensed in SURVIVE (when a cell stay alive or die) and BORN (when a cell become alive).
+Conway Game of Life rules, <br>
+aka "underpopulation", "next generation", "overpopulation" and "reproduction"<br>
+int Game Of Cells are condensed into two arrays of rules: <br>
+> SURVIVE_RULE (when a cell stay alive or die)<br>
+> BORN_RULE (when a cell become alive)
 
-Player command 1 cell, which is always alive (not killed by game of cells SURVIVE rules),<br>
-and can move it in the 8 directions (N, NE, E, SE, S, SO, O, NO), or stay in the current position for a determined number of cycles.
+Player controls 1 cell, which is always alive (not killed by SURVIVE_RULE rules),<br>
+and it can moves in the 8 directions (N, NE, E, SE, S, SO, O, NO), <br>
+or stay in the current position for a determined number of cycles.
+> After a move, the last player position become a child,<br>
+> which is affected by SURVIVE and BORN rules.
 
-After a move, the last position become a child, which is affected by SURVIVE and BORN rules.<br>
+When every player has finished his/her/its move, then arrays of rules are applied.<br>
+> If the cell controlled by one player<br>
+>  is overlapped by a generated cell of another player, <br>
+> he/she/it is dead.<br>
+Two player-controlled cells cannot destroy each other.
 
-When every player has finished his/her/its move, then rules are applied.
 
-If the cell controlled by one player is overlapped by a generated cell of another player, he/she/it is dead.<br>
-Two controlled cells cannot destroy eachother.
+*SO, possible states of a cell are:<br>*
+* **Dead cell**
+* **Player cell**
+* contested cell
+    * **player-on-player**: nothing happens
+    * **player-on-its-generation**: if lobby rules permits it, it's ok
+    * **enemy-generation-on-player**: the player is dead
+    * **generation-on-other-generation**: depends by the lobby rules<br> (number of cells, matrix scan order, ecc...)
+* **alive cell** (generated or map cell)
 
-SO, possible states of a cell are:<br>
-* Dead cell
-* Player cell
-* contest cell
-    * player-on-player: nothing happens
-    * player-on-its-generation: if lobby rules permits it, it's ok
-    * enemy-generation-on-player: the player is dead
-    * generation-on-other-generation: depends on lobby rules (number of cells, matrix scan order, ecc...)
-* alive cell (generated or map cell)
+---
 
 ## Game modes
-
 
 
 ### Singleplayer
@@ -97,7 +136,6 @@ This gamemode try to kill you with patterns of generated waves, <br>faster and f
 too fast that will become unpredictable to avoid the death.
 
 
-
 ### Multiplayer
 
 ##### Last-man Standing
@@ -115,7 +153,6 @@ you can't move inside it without these.
 Red vs Blue, classic team deathmatch where win depends on the kills counter.
 
 
-
 ### 0-player
 
 ##### Map Generation
@@ -131,25 +168,12 @@ What can you do with a sequence of bits and a bitrate?<br>(with colors you can a
 
 ---
 
+## Contributing
+
+Help these poor bytes with throwing to they [SO MANY ISSUES](https://github.com/Lince99/ASCIIGames/issues) .<br>
+Remember to always follow [Code of Conduct](https://github.com/Lince99/ASCIIGames/tree/dev/GameOfCells/CODE_OF_CONDUCT.md) .
+
+---
+
 ## License
-_MIT License_
-
-_Copyright (c) 2018 Basso Nicola_
-
-_Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:_
-
-_The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software._
-
-_THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE._
+This project is under MIT license, you can find a copy at [LICENSE](https://github.com/Lince99/ASCIIGames/tree/dev/GameOfCells) .

@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
     //initialize Ncurses
     initscr();
 
+
     //get current terminal window max coordinates
     getmaxyx(stdscr, term_y, term_x);
 
@@ -43,8 +44,10 @@ int main(int argc, char** argv) {
         input = wgetch(main_w);
         if(input == 'q')
             break;
-        if(input == 10)
-            wmove(main_w, y+1, 0);
+        if(input == 10) {
+            y++;
+            wmove(main_w, y, 0);
+        }
     }
 
     //free Ncurses window
