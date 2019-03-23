@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2019 Lince99
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include <ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -15,9 +26,9 @@ int main(int argc, char *argv[]) {
     initscr();
     noecho();
     curs_set(FALSE);
-    // get our maximum window dimensions
+    //get our maximum window dimensions
     getmaxyx(stdscr, parent_y, parent_x);
-    // set up initial windows
+    //set up initial windows
     WINDOW *main_w = newwin(parent_y, parent_x, 0, 0);
 
     while(1) {
@@ -25,7 +36,7 @@ int main(int argc, char *argv[]) {
         if(old_size_x != parent_x || old_size_y != parent_y) {
             wclear(main_w);
         }
-        // draw border
+        //draw border
         draw_borders(main_w, '+', '|', '-');
         //refresh window
         wrefresh(main_w);
@@ -49,17 +60,17 @@ int main(int argc, char *argv[]) {
 void draw_borders(WINDOW *screen, char cross, char side, char horiz) {
     int x, y, i;
     getmaxyx(screen, y, x);
-    // 4 corners
+    //4 corners
     mvwprintw(screen, 0, 0, "%c", cross);
     mvwprintw(screen, y-1, 0, "%c", cross);
     mvwprintw(screen, 0, x-1, "%c", cross);
     mvwprintw(screen, y-1, x-1, "%c", cross);
-    // sides
+    //sides
     for (i = 1; i < (y-1); i++) {
         mvwprintw(screen, i, 0, "%c", side);
         mvwprintw(screen, i, x-1, "%c", side);
     }
-    // top and bottom
+    //top and bottom
     for (i = 1; i < (x-1); i++) {
         mvwprintw(screen, 0, i, "%c", horiz);
         mvwprintw(screen, y-1, i, "%c", horiz);

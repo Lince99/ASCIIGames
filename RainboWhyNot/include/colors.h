@@ -1,6 +1,12 @@
 /*
- * Basso Nicola
- * aka Lince99
+ * Copyright (c) 2019 Lince99
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 /*
  * library dedicated only to define constant string that change text color or background
@@ -66,9 +72,6 @@ https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
 
 //move cursor
 #define gotoxy(x,y) printf("\033[%d;%dH", (x), (y))
-/*void gotoxy(int x, int y) {
-    printf("\033[%d;%dH", x, y);
-}*/
 
 //clear the screen
 #ifndef ANSI_CLEAN
