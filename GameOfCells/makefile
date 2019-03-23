@@ -4,11 +4,9 @@ CC=gcc
 RM=rm -f
 
 # name of the source (include folders if the source isn't in the current dir)
-SRC=Game_of_cells.c
-#other libraries
-LDFLAGS=-lncurses
+SRC=gameofcells.c
 # name of the executable
-EXC=Game_of_cells
+EXC=gameofcells
 # params used in the program
 PARAMS=
 # compile params like optimization or other platform targeting
@@ -45,7 +43,7 @@ C_FOLD_OPT+= -freorder-functions
 #-foptimize-sibling-calls -freorder-blocks -freorder-functions
 
 
-all: clean_reset compile
+all: clean_reset compile run
 
 all_opt: clean_reset compile_optimize run_less
 
@@ -57,19 +55,19 @@ help:
 	@echo "compile_optimize \n\tcompile and try to use built-in optimizers"
 
 compile:
-	@$(CC) -o $(EXC) $(SRC)
+	@$(CC) -o $(EXC) $(SRC) -lncurses
 	@strip $(EXC)
 
 compile_info:
-	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_INFO)
+	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_INFO) -lncurses
 	@strip $(EXC)
 
 compile_optimize:
-	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_OPT) $(C_FOLD_OPT)
+	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_OPT) $(C_FOLD_OPT) -lncurses
 	@strip $(EXC)
 
 cron_time:
-	@time -p $(CC) -o $(EXC) $(SRC) $(C_PAR)
+	@time -p $(CC) -o $(EXC) $(SRC) $(C_PAR) -lncurses
 	@time -p ./$(EXC) $(PARAMS)
 
 debug:

@@ -21,6 +21,8 @@ int main(int argc, char** argv) {
     WINDOW *main_w;
     int term_y, term_x;
     int main_y, main_x;
+    int input = 0;
+    int x, y = 0;
 
     //initialize Ncurses
     initscr();
@@ -32,10 +34,17 @@ int main(int argc, char** argv) {
     main_x = term_x;
 
     //create the main window
-    main_w = newwin(term_y, term_x, main_y, main_x);
+    main_w = newwin(main_y, main_x, 0, 0);
 
-    //wait user input
-    getch();
+    raw();
+    nodelay(main_w, 0);
+    while(1) {
+        input = wgetch(main_w);
+        if(input == 'q')
+            break;
+        if(input == 10)
+            wmove(main_w, y+1, 0);
+    }
 
     //free Ncurses window
     delwin(main_w);
