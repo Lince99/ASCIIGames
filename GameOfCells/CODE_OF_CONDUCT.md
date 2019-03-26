@@ -1,6 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-***Disclaimer of Disclaimer: <br>this file come from [Contributor-covenant](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md) , this file is at his default state with only some data modified.***
+***Disclaimer of Disclaimer: <br>this file came from [Contributor-covenant](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md) website, and It's a default COC with only some data modified.***
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as

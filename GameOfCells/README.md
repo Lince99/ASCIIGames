@@ -87,7 +87,7 @@ git push -u origin master
 
 Conway Game of Life rules, <br>
 aka "underpopulation", "next generation", "overpopulation" and "reproduction"<br>
-int Game Of Cells are condensed into two arrays of rules: <br>
+inside Game Of Cells, they are condensed into two arrays of rules: <br>
 > SURVIVE_RULE (when a cell stay alive or die)<br>
 > BORN_RULE (when a cell become alive)
 

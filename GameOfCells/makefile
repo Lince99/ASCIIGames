@@ -10,37 +10,19 @@ EXC=releases/gameofcells
 # params used in the program
 PARAMS=
 # compile params like optimization or other platform targeting
-C_PAR=-Os -Wall -fdiagnostics-color=auto
-# - - - warnings - - -
-#-Wextra -Wall
+C_PAR=-Os -Wall
 
 C_INFO=-fdiagnostics-color=auto
-# - - - infoes - - -
-#-ftime-report
-#-fopt-info
-#-fdump-statistics -fstack-usage ( -fstats for C++)
-#-aux-info signatures.txt
-#-fdiagnostics-color=auto
-#-fdiagnostics-parseable-fixits -fdiagnostics-generate-patch
 
 C_OPT=-faggressive-loop-optimizations -fcombine-stack-adjustments
 C_OPT+= -fexpensive-optimizations -falign-functions -falign-jumps
 C_OPT+= -falign-labels -falign-loops -floop-nest-optimize
 C_OPT+= -foptimize-strlen -ftree-loop-optimize
-# - - - optimizations - - -
-#-Os
-#-fpredictive-commoning
-#-faggressive-loop-optimizations -fcombine-stack-adjustments -fexpensive-optimizations
-#-falign-functions -falign-jumps -falign-labels -falign-loops
-#-fconserve-stack
-#-floop-nest-optimize -foptimize-strlen -ftree-loop-optimize
 
 C_FOLD_OPT=-fipa-icf -fipa-icf-functions -fipa-icf-variables -fipa-reference
 C_FOLD_OPT+= -fipa-pta -foptimize-sibling-calls -freorder-blocks
 C_FOLD_OPT+= -freorder-functions
-# - - - folding optimizations - - -
-#-fipa-icf -fipa-icf-functions -fipa-icf-variables -fipa-reference -fipa-pta
-#-foptimize-sibling-calls -freorder-blocks -freorder-functions
+
 
 
 all: clean_reset compile run
@@ -53,6 +35,11 @@ help:
 	@echo "compile \n\tcompile from the source and strip it"
 	@echo "compile_info \n\tcompile and show compilation/linking stuffs"
 	@echo "compile_optimize \n\tcompile and try to use built-in optimizers"
+	@echo "cron_time \n\trun the program under time to cronometrate it"
+	@echo "clean \n\tremove executable"
+	@echo "clean_reset \n\tremove executable and clear terminal"
+	@echo "run \n\trun the program"
+	@echo "run \n\trun the program under less for a better visualization"
 
 compile:
 	@$(CC) -o $(EXC) $(SRC) -lncurses
@@ -69,9 +56,6 @@ compile_optimize:
 cron_time:
 	@time -p $(CC) -o $(EXC) $(SRC) $(C_PAR) -lncurses
 	@time -p ./$(EXC) $(PARAMS)
-
-debug:
-	@gdb $(EXC)
 
 clean:
 	@$(RM) $(EXC)

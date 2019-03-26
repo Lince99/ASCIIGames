@@ -1,4 +1,5 @@
 /*
+ * This source is under MIT license
  * Copyright (c) 2019 Lince99
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,29 +16,37 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifndef QUEUE_LIMIT
-    #define QUEUE_LIMIT 10000
-#endif
+//global variables (modified by user settings)
+int QUEUE_LIMIT = 10000;
 
-int queue_dim = 0;
+//signatures
+typedef struct QCHAR qchar;
+qchar* init_qchar(char, int, int);
+qchar* push_qchar(qchar*, char, int, int);
+qchar* pop_qchar(qchar*);
+qchar* pophead_qchar(qchar*);
+qchar* getlast_qchar(qchar*);
+int getsize_qchar(qchar*);
+void free_qchar(qchar*);
+
+
 
 //queue struct for undo and redo (bidirectional list)
-typedef struct Q_CHAR q_char;
-struct Q_CHAR {
+struct QCHAR {
     char value;
     int y;
     int x;
-    q_char* next;
-    q_char* prev;
+    qchar* next;
+    qchar* prev;
 };
 
 /*
  * create new node and return it
  */
-q_char* initQ_char(char val, int y, int x) {
-    q_char* node = NULL;
+qchar* init_qchar(char val, int y, int x) {
+    qchar* node = NULL;
 
-    node = (q_char*) malloc(sizeof(q_char));
+    node = (qchar*) malloc(sizeof(qchar));
     if(node == NULL) {
         perror("Error add element to queue! (init)\n");
         return NULL;
@@ -54,11 +63,11 @@ q_char* initQ_char(char val, int y, int x) {
 /*
  * add at the tail of the queue 1 new node
  */
-q_char* pushQ_char(q_char* head, char val, int y, int x) {
-    q_char* node = NULL;
-    q_char* q = head;
+qchar* push_qchar(qchar* head, char val, int y, int x) {
+    qchar* node = NULL;
+    qchar* q = head;
 
-    node = initQ_char(val, y, x);
+    node = init_qchar(val, y, x);
     if(node == NULL)
         return NULL;
     if(q == NULL)
@@ -74,8 +83,8 @@ q_char* pushQ_char(q_char* head, char val, int y, int x) {
 /*
  * remove last node of the queue
  */
-q_char* popQ_char(q_char* head) {
-    q_char* q = head;
+qchar* pop_qchar(qchar* head) {
+    qchar* q = head;
 
     if(q == NULL)
         return NULL;
@@ -89,7 +98,7 @@ q_char* popQ_char(q_char* head) {
 /*
  * remove first node of the queue
  */
-q_char* popHeadQ_char(q_char* q) {
+qchar* pophead_qchar(qchar* q) {
 
     if(q == NULL)
         return NULL;
@@ -104,7 +113,7 @@ q_char* popHeadQ_char(q_char* q) {
 /*
  * get last node in the queue
  */
-q_char* getLastQ_char(q_char* head) {
+qchar* getlast_qchar(qchar* head) {
 
     if(head == NULL)
         return NULL;
@@ -115,10 +124,31 @@ q_char* getLastQ_char(q_char* head) {
 }
 
 /*
+ * return the current size of the queue
+ */
+int getsize_qchar(qchar* head) {
+    qchar* tmp = head;
+    int size = 0;
+
+    if(head == NULL)
+        return 0;
+    while(tmp->prev != NULL) {
+        size++;
+        tmp = tmp->prev;
+    }
+    while(head->next != NULL) {
+        size++;
+        head = head->next;
+    }
+
+    return size;
+}
+
+/*
  * free the queue from start
  */
-void freeQ_char(q_char* q) {
-    q_char* tmp = NULL;
+void free_qchar(qchar* q) {
+    qchar* tmp = NULL;
 
     if(q == NULL)
         return;

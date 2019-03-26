@@ -1,4 +1,5 @@
 /*
+ * This source is under MIT license
  * Copyright (c) 2019 Lince99
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,19 +16,22 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "include/queue_char.h"
+#include "include/window_manager.h"
+#include "include/GOC_api/array_rules.h"
+#include "include/GOC_api/matrix_cell.h"
 
 
 int main(int argc, char** argv) {
     WINDOW *main_w;
     int term_y, term_x;
     int main_y, main_x;
-    int input = 0;
+    int** matrix = NULL;
+    int user_input = 0;
     int x, y = 0;
 
     //initialize Ncurses
     initscr();
-
 
     //get current terminal window max coordinates
     getmaxyx(stdscr, term_y, term_x);
@@ -41,10 +45,10 @@ int main(int argc, char** argv) {
     raw();
     nodelay(main_w, 0);
     while(1) {
-        input = wgetch(main_w);
-        if(input == 'q')
+        user_input = wgetch(main_w);
+        if(user_input == 'q')
             break;
-        if(input == 10) {
+        if(user_input == 10) {
             y++;
             wmove(main_w, y, 0);
         }

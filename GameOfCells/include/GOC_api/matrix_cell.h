@@ -9,18 +9,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/*
- * various procedures and functions that take cares about windows
- */
 
-#include <ncurses.h>
-
-int HAS_COLORS = 1;
+#ifndef MATRIX_CELL_H
+#define MATRIX_CELL_H
 
 
-/*
-//test colors
-if(!has_colors()) {
-    HAS_COLORS = 0;
-}
-*/
+
+#endif //MATRIX_CELL_H
