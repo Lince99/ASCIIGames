@@ -15,8 +15,11 @@
 
 #include <ncurses.h>
 
+//global variables
 int HAS_COLORS = 1;
 
+
+//signatures
 
 /*
 //test colors

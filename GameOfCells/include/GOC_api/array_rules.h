@@ -24,7 +24,6 @@ int* new_rule(size_t);
 int* renew_rule(size_t);
 int set_rule(int*, int, int);
 int get_rule(int*, int);
-int count_alive_near(int**, int, int, int, int);
 
 
 
@@ -86,62 +85,5 @@ int get_rule(int* rule, int pos) {
         return -2;
     return rule[pos];
 }
-
-/*
- * count how many cells around y,x cell are alive
- * return -1 on error, >= 0 on success
- */
-int count_alive_near(int** matrix, int mat_y, int mat_x, int y, int x) {
-    int count = 0;
-
-    if(y < 0 || y >= mat_y || x < 0 || x >= mat_x)
-        return -1;
-
-    //check top
-    if(y-1 >= 0) {
-        //check top left
-        if(x-1 >= 0) {
-            if(matrix[y-1][x-1])
-                count++;
-        }
-        //check top mid
-        if(matrix[y-1][x])
-            count++;
-        //check top right
-        if(x+1 < mat_x) {
-            if(matrix[y-1][x+1])
-                count++;
-        }
-    }
-    //check mid left
-    if(x-1 >= 0) {
-        if(matrix[y][x-1])
-            count++;
-    }
-    //check mid right
-    if(x+1 < mat_x) {
-        if(matrix[y][x+1])
-            count++;
-    }
-    //check bottom
-    if(y+1 < mat_y) {
-        //check bottom left
-        if(x-1 >= 0) {
-            if(matrix[y+1][x-1])
-                count++;
-        }
-        //check bottom mid
-        if(matrix[y+1][x])
-            count++;
-        //check bottom right
-        if(x+1 < mat_x) {
-            if(matrix[y+1][x+1])
-                count++;
-        }
-    }
-
-    return count;
-}
-
 
 #endif //ARRAY_RULES_H
