@@ -1,6 +1,7 @@
 #Lince99
 
 CC=gcc
+CURS=-lncurses
 RM=rm -f
 
 # name of the source (include folders if the source isn't in the current dir)
@@ -27,7 +28,7 @@ C_FOLD_OPT+= -freorder-functions
 
 all: clean_reset compile run
 
-all_opt: clean_reset compile_optimize run_less
+all_opt: clean_reset compile_optimize run
 
 help:
 	@echo "\nUse make [option]:\n"
@@ -42,19 +43,19 @@ help:
 	@echo "run \n\trun the program under less for a better visualization"
 
 compile:
-	@$(CC) -o $(EXC) $(SRC) -lncurses
+	@$(CC) -o $(EXC) $(SRC) $(CURS)
 	@strip $(EXC)
 
 compile_info:
-	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_INFO) -lncurses
+	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_INFO) $(CURS)
 	@strip $(EXC)
 
 compile_optimize:
-	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_OPT) $(C_FOLD_OPT) -lncurses
+	@$(CC) -o $(EXC) $(SRC) $(C_PAR) $(C_OPT) $(C_FOLD_OPT) $(CURS)
 	@strip $(EXC)
 
 cron_time:
-	@time -p $(CC) -o $(EXC) $(SRC) $(C_PAR) -lncurses
+	@time -p $(CC) -o $(EXC) $(SRC) $(C_PAR) $(CURS)
 	@time -p ./$(EXC) $(PARAMS)
 
 clean:

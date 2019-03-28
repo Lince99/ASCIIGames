@@ -18,8 +18,10 @@
 #include <stdlib.h>
 #include "include/queue_char.h"
 #include "include/window_manager.h"
-#include "include/GOC_api/array_rules.h"
-#include "include/GOC_api/matrix_cell.h"
+#include "include/goc_game_api/array_rules.h"
+#include "include/goc_game_api/matrix_cell.h"
+#include "include/goc_net_api/goc_server.h"
+#include "include/goc_net_api/goc_client.h"
 
 
 int main(int argc, char** argv) {
@@ -44,6 +46,7 @@ int main(int argc, char** argv) {
 
     raw();
     nodelay(main_w, 0);
+    wprintw(main_w, "Press q to exit.\n");
     while(1) {
         user_input = wgetch(main_w);
         if(user_input == 'q')
