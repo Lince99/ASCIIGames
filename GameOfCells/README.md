@@ -1,83 +1,31 @@
-# GAME OF CELLS <!-- INSERT LOGO HERE -->
+# GAME OF CELLS <!-- INSERT LOGO GIF HERE -->
 #### Based on the classical <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life (1970)</a>,<br>but this time you are one of the cells!
 
 
-<!-- INSERT SCREENSHOT HERE -->
+<!-- INSERT SCREENSHOTS HERE -->
 
 ---
 
-### Index of game modes
+## TODO list
 
-*Game of Cells* has several game modes:
-1. **Singleplayer**
-    - Tutorial
-    - Highscore
-    - Sandbox
-    - Waves
-1. **Multiplayer** (or vs bots)
-    - Last-man Standing
-    - Sector Conquest
-    - Team Deathseekers
-1. **0-player**
-    - Map Generation
-    - Screensaver
-    - Music
-
----
-
-## Installation guide
-
-### RELEASES
-
-Choose any executable from [releases](https://github.com/Lince99/ASCIIGames/tree/dev/GameOfCells/releases) folder, simple as is.
-<br><br>
-#### CONTRIBUTORS ONLY
-
-For beginners I think MarcDiethelm guide is a good start: [HowToContribute](https://github.com/MarcDiethelm/contributing/blob/master/README.md).<br>
-Or use Joshnh list of commonly used Git commands, which is also useful for beginners:
-[HowToGit](https://github.com/joshnh/Git-Commands).<br>
-Or this official github guide:
-[Contributing on Github](https://github.com/MarcDiethelm/contributing/blob/master/README.md).
-
-**Dependencies**
-
-- gcc for compile:
-```bash
-#For Ubuntu-based machines
-sudo apt-get update && sudo apt-get install gcc -y
-```
-- make for build:
-```bash
-#For Ubuntu-based machines
-sudo apt-get install make -y
-```
-- git for contribute:
-```bash
-#For Ubuntu-based machines
-sudo apt-get install git -y
-```
-
-
-**Step by Step guide** <br>
-
-First clone this repo:
-```bash
-git clone https://github.com/Lince99/ASCIIGames
-git checkout master #or dev or everything else you want work onto
-```
-Do something useful following code style of the project.<br>
-Then push to your local branch:
-```bash
-#go on you higher level of project directory
-git add .
-git commit -am "Some useful and descriptive message"
-git push upstream master #or dev or everything else
-```
-
-And when you're ready, create a new PR (push request):
-```bash
-git push -u origin master
-```
+* [ ] Room Server
+    * [ ] Client authentication
+    * [ ] List of Lobby servers
+* [ ] Lobby Server
+    * [ ] Chat
+    * [ ] Server rules
+* [ ] Client
+    * [ ] Menu
+    * [ ] Game modes:
+        * [ ] Singleplayer
+        * [ ] Multiplayer
+            * [ ] Admin rules
+            * [ ] Server sync
+        * [ ] 0-player
+            * [ ] Default rules for nice visualization
+            * [ ] Filter music generation
+* [ ] Stable release
+* [ ] Mods (like user-defined maps, ...)
 
 ---
 
@@ -113,6 +61,25 @@ Two player-controlled cells cannot destroy each other.
     * **enemy-generation-on-player**: the player is dead
     * **generation-on-other-generation**: depends by the lobby rules<br> (number of cells, matrix scan order, ecc...)
 * **alive cell** (generated or map cell)
+
+---
+
+### Index of game modes
+
+*Game of Cells* has several game modes:
+1. **Singleplayer**
+    - Tutorial
+    - Highscore
+    - Sandbox
+    - Waves
+1. **Multiplayer** (or vs bots)
+    - Last-man Standing
+    - Sector Conquest
+    - Team Deathseekers
+1. **0-player**
+    - Map Generation
+    - Screensaver
+    - Music
 
 ---
 
@@ -165,6 +132,62 @@ Only "pause/stop" or "prev/next draw" options can be used
 ##### Music
 What can you do with a sequence of bits and a bitrate?<br>(with colors you can add different tones)
 
+---
+
+## Installation guide
+
+### RELEASES
+
+**Choose any executable from [releases](https://github.com/Lince99/ASCIIGames/tree/dev/GameOfCells/releases) folder, simple as is.**
+<br><br>
+
+#### CONTRIBUTORS ONLY
+
+For beginners I think MarcDiethelm guide is a good start: [HowToContribute](https://github.com/MarcDiethelm/contributing/blob/master/README.md).<br>
+Or use Joshnh list of commonly used Git commands, which is also useful for beginners:
+[HowToGit](https://github.com/joshnh/Git-Commands).<br>
+Or this official github guide:
+[Contributing on Github](https://github.com/MarcDiethelm/contributing/blob/master/README.md).
+
+**Dependencies**
+
+- gcc for compile:
+```bash
+#For Ubuntu-based machines
+sudo apt-get update && sudo apt-get install gcc -y
+```
+- make for build:
+```bash
+#For Ubuntu-based machines
+sudo apt-get install make -y
+```
+- git for contribute:
+```bash
+#For Ubuntu-based machines
+sudo apt-get install git -y
+```
+
+
+**Step by Step guide** <br>
+
+First clone this repo:
+```bash
+git clone https://github.com/Lince99/ASCIIGames
+git checkout dev #or dev or everything else you want work onto
+```
+Do something useful following code style of the project.<br>
+Then push to your local branch:
+```bash
+#go on you higher level of project directory
+git add .
+git commit -am "Some useful and descriptive message"
+git push upstream dev #or dev or everything else
+```
+
+And when you're ready, create a new PR (push request):
+```bash
+git push -u origin/dev dev
+```
 
 ---
 
