@@ -15,6 +15,11 @@
 
 #include <ncurses.h>
 
+//manage Ctrl+other buttons
+#ifndef CTRL
+    #define CTRL(c) ((c) & 037)
+#endif
+
 //global variables
 int HAS_COLORS = 1;
 

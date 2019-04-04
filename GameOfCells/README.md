@@ -151,10 +151,10 @@ Or this official github guide:
 
 **Dependencies**
 
-- gcc for compile:
+- gcc and ncurses for compile:
 ```bash
 #For Ubuntu-based machines
-sudo apt-get update && sudo apt-get install gcc -y
+sudo apt-get update && sudo apt-get install gcc ncurses -y
 ```
 - make for build:
 ```bash

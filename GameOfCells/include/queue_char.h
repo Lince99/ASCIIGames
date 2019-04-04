@@ -28,6 +28,7 @@ qchar* pophead_qchar(qchar*);
 qchar* getlast_qchar(qchar*);
 int getsize_qchar(qchar*);
 void free_qchar(qchar*);
+int is_alphanum(int ch);
 
 
 
@@ -161,6 +162,23 @@ void free_qchar(qchar* q) {
         free(tmp);
     }
 
+}
+
+int is_alphanum(int ch) {
+
+    //Ascii table 0-127
+    if(ch >= 32 || ch <= 126)
+        return 1;
+    //extended AScii table 128-255
+    if((ch == 128) || (ch >= 130 || ch <= 140) || (ch == 142) ||
+       (ch >= 130 || ch <= 140) || (ch >= 130 || ch <= 140) ||
+       (ch == 142) || (ch >= 145 || ch <= 156) || (ch == 158) ||
+       (ch == 159) || (ch >= 161 || ch <= 172) ||
+       (ch >= 174 || ch <= 183) || (ch >= 185 || ch <= 255))
+        return 1;
+
+    //non-printable character
+    return 0;
 }
 
 #endif //QUEUE_CHAR_H
