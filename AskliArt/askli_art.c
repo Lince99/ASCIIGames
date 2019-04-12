@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     //user input var
     int ch = 0;
     int usr_req = 0;
-    char* usr_str = NULL;
+    //char* usr_str = NULL;
     int** matrix = NULL;
     int mat_y = 0;
     int mat_x = 0;
@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             //reset option
-            case CTRL('R'):
+            case CTRL('r'):
                 wclear(main_w);
                 wattr_on(main_w, COLOR_PAIR(3), NULL);
                 draw_borders(main_w);
