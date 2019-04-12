@@ -8,9 +8,3 @@ TYPE OF GAMES:
 - Create some Multiplayer Turn-Based Game
 - Possibly some Player-vs-AI and AI-vs-AI modes on all games
 - Create some Visual Story Games (like a simple rainbow that scroll on the terminal, why not)
-
-Zeros game:
-Rainbooooowwwwwwwwssssss
-
-First game:
-GAME_OF_CELLS

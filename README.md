@@ -1,5 +1,5 @@
 # ASCIIGames
-Some old-style classical games in ASCII-art or pixel art
+Some old-style classical games in ASCII-art or pixel art tools
 
 # IMPORTANT!
 **this repo contains several games because at the end, <br>
@@ -10,3 +10,4 @@ GameOfCells
 
 ## Current Working games:
 RainboWhyNot (only CLI)
+AsciiCLIart (ncurses)
