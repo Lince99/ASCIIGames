@@ -95,6 +95,10 @@ void draw_borders(WINDOW* screen) {
  */
 char* get_input_str(WINDOW* screen) {
     char* str = NULL;
+    
+    str = (char*) malloc(sizeof(char)*MAX_STRING_LEN);
+    if(str == NULL)
+        return NULL;
 
     curs_set(1);
     noraw();
@@ -103,7 +107,6 @@ char* get_input_str(WINDOW* screen) {
     nodelay(screen, 0);
     echo();
 
-    //TODO FIX HERE
     if(wgetnstr(screen, str, MAX_STRING_LEN) == ERR)
         return NULL;
 

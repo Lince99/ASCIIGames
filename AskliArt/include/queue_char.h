@@ -124,7 +124,6 @@ q_char* popHeadQ_char(q_char* head) {
  */
 q_char* getLastQ_char(q_char* head) {
 
-    //TODO FIX BUG HERE
     if(head == NULL)
         return NULL;
     while(head->next != NULL)
@@ -141,12 +140,13 @@ int queue_to_file(q_char* q, char* filename) {
     
     if(q == NULL || filename == NULL)
         return 1;
-    fp = fopen(filename, "a+");
+    fp = fopen(filename, "w+");
     if(fp == NULL)
         return 2;
     while(q->prev != NULL)
         q = q->prev;
-    while(q->next != NULL) {
+    //TODO OPTIMIZE OUTPUT
+    while(q != NULL) {
         fprintf(fp, "'%c' %d %d\n", q->value, q->y, q->x);
         q = q->next;
     }

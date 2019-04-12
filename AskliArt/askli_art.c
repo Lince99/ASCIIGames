@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     //user input var
     int ch = 0;
     int usr_req = 0;
-    //char* usr_str = NULL;
+    char* usr_str = NULL;
     int** matrix = NULL;
     int mat_y = 0;
     int mat_x = 0;
@@ -61,16 +61,17 @@ int main(int argc, char *argv[]) {
     //create the main window
     main_w = newwin(nlines, ncols, y, x);
     //Minimum terminal size requirement
-    if(ncols < TERM_MIN_Y || nlines < TERM_MIN_X) {
+    /*if(ncols < TERM_MIN_Y || nlines < TERM_MIN_X) {
         mvwprintw(main_w, 0, 0, "TOO SMALL!");
         endwin();
         return 2;
-    }
+    }*/
     welcome_message(stdscr);
     //initiate input settings
     raw();
     nonl();
     keypad(main_w, 1);
+    cbreak();
     nodelay(main_w, 0); //1 for more responsive but cpu intensive
     intrflush(main_w, 0); //1 to inherit from tty drive
     curs_set(1);
@@ -345,39 +346,43 @@ int main(int argc, char *argv[]) {
                 wgetch(main_w);
                 break;
             */
-            /*TODO FIX HERE
             //save option
             case CTRL('S'):
                 wclear(main_w);
                 draw_borders(main_w);
                 //ask file name from user
-                print_info(main_w, "Insert filename\n:", 
+                print_info(main_w, "Insert filename: ", 
                                1, 1, 4, FALSE);
+                //wmove(main_w, 2, 1);
                 usr_str = get_input_str(main_w);
                 //save matrix to file and print info if there are some errors
-                usr_req = matrix_to_file(matrix, mat_y, mat_x, usr_str);
+                usr_req = matrix_to_file(matrix, mat_y, mat_x, strcat(usr_str, ".txt"));
                 if(usr_req == 0) {
                     print_info(main_w, "Ascii art saved!", 
                                3, 1, 2, FALSE);
                     //ask if user want to save undo/redo queue
                     print_info(main_w, "Also save queue? [Y/n] ", 
                                4, 1, 4, FALSE);
+                    
                     wrefresh(main_w);
+                    curs_set(0);
                     usr_req = wgetch(main_w);
+                    curs_set(1);
                     if(usr_req == 'Y' || usr_req == 'y')
-                        queue_to_file(queue, strcat(usr_str, "_queue.txt"));
+                        queue_to_file(queue, strcat(usr_str, "_queue"));
                 }
                 else if(usr_req == 1)
                     print_info(main_w, "Error nil on save!", 
                                3, 1, 1, FALSE);
-                else if(usr_req == 2)
+                else if(usr_req == 2) {
                     print_info(main_w, "Error on save file!", 
                                3, 1, 1, TRUE);
+                    wgetch(main_w);
+                }
                 wrefresh(main_w);
-                wgetch(main_w);
                 wclear(main_w);
                 break;
-            */
+            
 
             //here ascii art is printed
             default:
@@ -424,8 +429,8 @@ void welcome_message(WINDOW* win) {
     keypad(win, 1);
     nodelay(win, 0);
     mvwprintw(win, 1, 1, " Use arrows or Tab to move");
-    mvwprintw(win, 2, 1, "_Use CTRL+S to Save");
-    mvwprintw(win, 3, 1, "_Use CTRL+L to Load file");
+    mvwprintw(win, 2, 1, " Use CTRL+S to Save");
+    mvwprintw(win, 3, 1, "#Use CTRL+L to Load file");
     mvwprintw(win, 4, 1, " Use CTRL+Z to undo");
     mvwprintw(win, 5, 1, " Use CTRL+Y for redo");
     mvwprintw(win, 6, 1, " Use CTRL+R to Reset");

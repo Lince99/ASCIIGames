@@ -196,7 +196,6 @@ void free_matrix(int** matrix, int mat_y) {
 
 }
 
-//-----------------------------------TODO-------------------------------------//
 /*
  * save matrix to filename, return 0 on success, 1 on NULL found, 2 I/O error
  */
@@ -209,6 +208,7 @@ int matrix_to_file(int** matrix, int mat_y, int mat_x, char* filename) {
     fp = fopen(filename, "w+");
     if(fp == NULL)
         return 2;
+    //TODO OPTIMIZE OUTPUT
     //print to file matrix content
     for(y = 0; y < mat_y; y++) {
         for(x = 0; x < mat_x; x++) {
@@ -224,6 +224,7 @@ int matrix_to_file(int** matrix, int mat_y, int mat_x, char* filename) {
     return 0;
 }
 
+//-----------------------------------TODO-------------------------------------//
 /*
  * return a pointer to the matrix, and mat_y, mat_x via reference
  */
