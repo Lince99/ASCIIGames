@@ -232,7 +232,9 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
     FILE* fp = NULL;
     int** matrix = NULL;
     int ch = 0;
-    //int y, x;
+    int y = 0;
+    int x = 0;
+    bool already_get_x = FALSE;
 
     if(filename == NULL) {
         *mat_y = -1;
@@ -245,12 +247,29 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
         *mat_x = -1;
         return NULL;
     }
-    //read file content
+    //read matrix size
     while((ch = fgetc(fp)) != EOF) {
-        if(ch == '\n')
+        if(ch == '\n') {
             (*mat_y)++;
-        else
+            already_get_x = TRUE;
+        }
+        else if(!already_get_x)
             (*mat_x)++;
+    }
+    //create matrix
+    matrix = init_matrix(*mat_y, *mat_x);
+    if(matrix == NULL)
+        return 0;
+    //and re-read file to fill matrix
+    /*It's*/ rewind(fp); /*time*/
+    while((ch = fgetc(fp)) != EOF) {
+        if(ch == '\n') {
+            y++;
+            x = 0;
+        }
+        else
+            x++;
+        matrix[y][x] = ch;
     }
 
     fclose(fp);

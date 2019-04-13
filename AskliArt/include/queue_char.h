@@ -36,7 +36,8 @@ q_char* popQ_char(q_char*);
 q_char* popHeadQ_char(q_char*);
 q_char* getLastQ_char(q_char*);
 int queue_to_file(q_char*, char*);
-q_char* file_to_queue(char* filename);
+q_char* file_to_queue(q_char* queue, char* filename);
+int sizeQ_char(q_char*);
 void freeQ_char(q_char*);
 
 
@@ -137,7 +138,7 @@ q_char* getLastQ_char(q_char* head) {
  */
 int queue_to_file(q_char* q, char* filename) {
     FILE* fp = NULL;
-    
+
     if(q == NULL || filename == NULL)
         return 1;
     fp = fopen(filename, "w+");
@@ -150,21 +151,54 @@ int queue_to_file(q_char* q, char* filename) {
         fprintf(fp, "'%c' %d %d\n", q->value, q->y, q->x);
         q = q->next;
     }
-    fprintf(fp, "\n");
     fclose(fp);
-    
+
     return 0;
 }
 
 /*
- * load queue from a *_q.txt file
+ * load queue from file, appending structs to queue
  */
-q_char* file_to_queue(char* filename) {
-    q_char* q = NULL;
-    
-    //TODO ADD CODE FILE_TO_QUEUE
-    
-    return q;
+q_char* file_to_queue(q_char* queue, char* filename) {
+    q_char* q = queue;
+    FILE* fp = NULL;
+    char value = 0;
+    int y = 0;
+    int x = 0;
+
+    //append (goes to the end)
+    if(q != NULL) {
+        while(q->next != NULL)
+            q = q->next;
+    }
+    fp = fopen(filename, "r");
+    if(fp == NULL)
+        return queue;
+    //TODO FIX LOAD LOOP
+    //read line per line
+    while(fscanf(fp, "'%c' %d %d\n", &value, &y, &x) != EOF) {
+        q = pushQ_char(q, value, y, x);
+        //printf("r= %d %d %d\n", value, y, x);
+        queue_dim++;
+    }
+
+    return queue;
+}
+
+/*
+ * Return the size of the queue
+ */
+int sizeQ_char(q_char* q) {
+    int size = 0;
+
+    if(q == NULL)
+        return -1;
+    while(q->next != NULL) {
+        q = q->next;
+        size++;
+    }
+
+    return size;
 }
 
 /*
