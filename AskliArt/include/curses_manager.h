@@ -27,7 +27,7 @@
 
 //signatures
 int init_colors();
-void draw_borders(WINDOW*);
+void draw_borders(WINDOW*, int);
 char* get_input_str(WINDOW*);
 
 //globals
@@ -49,6 +49,14 @@ int init_colors() {
         init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
         init_pair(7, COLOR_WHITE,   COLOR_BLACK);
         init_pair(8, COLOR_BLACK,   COLOR_BLACK);
+        //backgrounds
+        init_pair(10, COLOR_WHITE,     COLOR_RED);
+        init_pair(20, COLOR_BLACK,   COLOR_GREEN);
+        init_pair(30, COLOR_BLACK,  COLOR_YELLOW);
+        init_pair(40, COLOR_WHITE,    COLOR_BLUE);
+        init_pair(50, COLOR_BLACK,    COLOR_CYAN);
+        init_pair(60, COLOR_WHITE, COLOR_MAGENTA);
+        init_pair(70, COLOR_BLACK,   COLOR_WHITE);
         return 1;
     }
     else
@@ -58,18 +66,20 @@ int init_colors() {
 /*
  * draw a simple AsciiExtended-style border
  */
-void draw_borders(WINDOW* screen) {
+void draw_borders(WINDOW* screen, int color) {
     int x = 0;
     int y = 0;
     int i = 0;
 
     getmaxyx(screen, y, x);
     //check color
-    if(!has_colors()) {
+    if(has_colors() == 0 || color < 1 || color > 8) {
         mvwprintw(screen, (int)y/2, (int)x/2, "NO COLOR SUPPORT!");
+        wrefresh(screen);
+        wgetch(screen);
     }
     else
-        attron(COLOR_PAIR(1));
+        wattr_on(screen, COLOR_PAIR(color), NULL);
     //http://melvilletheatre.com/articles/ncurses-extended-characters/index.html
     //corners
     mvwaddch(screen, 0, 0, ACS_ULCORNER);
@@ -86,7 +96,9 @@ void draw_borders(WINDOW* screen) {
         mvwaddch(screen, 0, i, ACS_HLINE);
         mvwaddch(screen, y-1, i, ACS_HLINE);
     }
-    attroff(COLOR_PAIR(1));
+    //disable color mode
+    if(has_colors())
+        wattr_off(screen, COLOR_PAIR(color), NULL);
 
 }
 
@@ -95,21 +107,26 @@ void draw_borders(WINDOW* screen) {
  */
 char* get_input_str(WINDOW* screen) {
     char* str = NULL;
-    
+
     str = (char*) malloc(sizeof(char)*MAX_STRING_LEN);
     if(str == NULL)
         return NULL;
-
+    //set personalized input configuration
     curs_set(1);
     noraw();
     nl();
     keypad(screen, 0);
     nodelay(screen, 0);
     echo();
-
-    if(wgetnstr(screen, str, MAX_STRING_LEN) == ERR)
+    //ask user input, if there is some kind of error, return NULL
+    if(wgetnstr(screen, str, MAX_STRING_LEN) == ERR) {
+        noecho();
+        raw();
+        nonl();
+        keypad(screen, 1);
         return NULL;
-
+    }
+    //reset input configuration
     noecho();
     raw();
     nonl();

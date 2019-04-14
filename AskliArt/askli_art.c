@@ -31,6 +31,8 @@ unsigned int TERM_MIN_Y = 11;
 unsigned int TERM_MIN_X = 37;
 unsigned short int TERM_HAS_COLORS = 0;
 unsigned short int TAB_COUNT = 4;
+char* extension = ".txt";
+char* queue_ext = "_q";
 
 
 
@@ -52,8 +54,6 @@ int main(int argc, char *argv[]) {
     int** matrix = NULL;
     int mat_y = 0;
     int mat_x = 0;
-    char* extension = ".txt";
-    char* queue_ext = "_q";
     bool recent_save = TRUE;
 
     //initialize Ncurses
@@ -75,16 +75,16 @@ int main(int argc, char *argv[]) {
     //initiate input settings
     raw();
     nonl();
-    keypad(main_w, 1);
-    cbreak();
-    nodelay(main_w, 0); //1 for more responsive but cpu intensive
-    intrflush(main_w, 0); //1 to inherit from tty drive
+    keypad(main_w, TRUE);
+    //cbreak();
+    nodelay(main_w, FALSE); //TRUE for more responsive but cpu intensive
+    intrflush(main_w, FALSE); //TRUE to inherit from tty drive
     curs_set(1);
-    draw_borders(main_w);
+    draw_borders(main_w, 7-in_mode);
 
     //start cursor position
-    y = (int)nlines/2;
-    x = (int)ncols/2;
+    y = 1; //(int)nlines/2;
+    x = 1; //(int)ncols/2;
     wmove(main_w, y, x);
 
     //init ascii art matrix
@@ -115,9 +115,7 @@ int main(int argc, char *argv[]) {
             //detect quit command
             case CTRL('q'):
                 wclear(main_w);
-                wattr_on(main_w, COLOR_PAIR(1), NULL);
-                draw_borders(main_w);
-                wattr_off(main_w, COLOR_PAIR(1), NULL);
+                draw_borders(main_w, 1);
                 //ask the user if he/she's sure to quit
                 print_info(main_w, "Confirm exit? [Y/n]", 1, 1, 3, TRUE);
                 if(!is_void_matrix(matrix, mat_y, mat_x) && !recent_save)
@@ -158,16 +156,19 @@ int main(int argc, char *argv[]) {
                 if(y-1 >= 1)
                     y--;
                 break;
+
             //Down Arrow or enter
             case KEY_DOWN:
                 if(y+1 < nlines-1)
                     y++;
                 break;
+
             //Left Arrow or backspace
             case KEY_LEFT:
                 if(x-1 >= 1)
                     x--;
                 break;
+
             //Right Arrow
             case KEY_RIGHT:
                 if(x+1 < ncols-1)
@@ -218,7 +219,7 @@ int main(int argc, char *argv[]) {
                 if(x >= ncols-1)
                     y = ncols-1;
                 wclear(main_w);
-                draw_borders(main_w);
+                draw_borders(main_w, 7-in_mode);
                 //update ascii matrix size (only bigger, not smaller)
                 if(nlines-1 > mat_y)
                     matrix = resize_matrix(matrix, &mat_y, &mat_x,
@@ -230,9 +231,11 @@ int main(int argc, char *argv[]) {
 
             //change input mode (from sequential to insert)
             case CTRL('m'):
-                if(in_mode == 0) //insert in the same position (require arrows to move left)
+                //insert in the same position (require arrows to move left)
+                if(in_mode == 0)
                     in_mode = 1;
-                else if(in_mode == 1) //sequential insertion mode (after 1 char, move to left)
+                //sequential insertion mode (after 1 char, move to left)
+                else if(in_mode == 1)
                     in_mode = 0;
                 break;
 
@@ -288,68 +291,77 @@ int main(int argc, char *argv[]) {
             //reset option
             case CTRL('r'):
                 wclear(main_w);
-                wattr_on(main_w, COLOR_PAIR(3), NULL);
-                draw_borders(main_w);
-                wattr_off(main_w, COLOR_PAIR(3), NULL);
-                //free undo and redo queue
-                if(queue != NULL) {
-                    print_info(main_w, "Reset undo queue? [Y/n] ",
-                               1, 1, 4, FALSE);
-                    wrefresh(main_w);
-                    curs_set(0);
-                    usr_req = wgetch(main_w);
-                    curs_set(1);
-                    //clear all queue pointers
-                    if(usr_req == 'Y' || usr_req == 'y') {
-                        freeQ_char(queue);
-                        queue = NULL;
-                        move_queue = NULL;
-                        queue_dim = 0;
-                        if(queue == NULL && move_queue == NULL) {
-                            print_info(main_w, "Undo queue clear",
-                                       2, 1, 2, FALSE);
-                            wrefresh(main_w);
-                        }
-                        //critical error quits from program
-                        else {
-                            print_info(main_w, "Error on queue clear",
-                                       2, 1, 1, TRUE);
-                            delwin(main_w);
-                            endwin();
-                            return 3;
+                draw_borders(main_w, 3);
+                //ask confirmation
+                print_info(main_w, "Clear matrix? [Y/n]",
+                           1, 1, 4, TRUE);
+                wrefresh(main_w);
+                curs_set(0);
+                usr_req = wgetch(main_w);
+                curs_set(1);
+                if(usr_req == 'Y' || usr_req == 'y') {
+                    //remove matrix content
+                    free_matrix(matrix, mat_y);
+                    //and re-init ascii art matrix
+                    getmaxyx(main_w, nlines, ncols);
+                    mat_y = nlines-1;
+                    mat_x = ncols-1;
+                    matrix = init_matrix(mat_y, mat_x);
+                    if(matrix != NULL) {
+                        print_info(main_w, "New matrix created",
+                                   2, 1, 2, FALSE);
+                        wrefresh(main_w);
+                        wgetch(main_w);
+                    }
+                    //critical error, no matrix, no program
+                    else {
+                        delwin(main_w);
+                        endwin();
+                        return 2;
+                    }
+                    //free undo and redo queue
+                    if(queue != NULL) {
+                        print_info(main_w, "Reset undo queue? [Y/n]",
+                                   3, 1, 4, TRUE);
+                        wrefresh(main_w);
+                        curs_set(0);
+                        usr_req = wgetch(main_w);
+                        curs_set(1);
+                        //clear all queue pointers
+                        if(usr_req == 'Y' || usr_req == 'y') {
+                            freeQ_char(queue);
+                            queue = NULL;
+                            move_queue = NULL;
+                            queue_dim = 0;
+                            if(queue == NULL && move_queue == NULL) {
+                                print_info(main_w, "Undo queue clear",
+                                           4, 1, 2, FALSE);
+                                wrefresh(main_w);
+                                wgetch(main_w);
+                            }
+                            //critical error quits from program
+                            else {
+                                print_info(main_w, "Error on queue clear",
+                                           4, 1, 1, TRUE);
+                                wgetch(main_w);
+                                delwin(main_w);
+                                endwin();
+                                return 3;
+                            }
                         }
                     }
+
+                    //update the screen
+                    wclear(main_w);
+                    recent_save = FALSE;
                 }
-                //remove matrix content
-                free_matrix(matrix, mat_y);
-                //and re-init ascii art matrix
-                getmaxyx(main_w, nlines, ncols);
-                mat_y = nlines-1;
-                mat_x = ncols-1;
-                matrix = init_matrix(mat_y, mat_x);
-                if(matrix != NULL) {
-                    print_info(main_w, "New matrix created",
-                               3, 1, 2, FALSE);
-                    wrefresh(main_w);
-                    wgetch(main_w);
-                }
-                //critical error, no matrix, no program
-                else {
-                    delwin(main_w);
-                    endwin();
-                    return 2;
-                }
-                //update the screen
-                wclear(main_w);
-                recent_save = FALSE;
                 break;
 
-
-            //TODO LOAD QUEUE FROM FILE
+            //TODO FIX LOAD QUEUE FROM FILE
             //load option
             case CTRL('l'):
                 wclear(main_w);
-                draw_borders(main_w);
+                draw_borders(main_w, 7-in_mode);
                 //request file name from user
                 print_info(main_w, "Load filename: ",
                            1, 1, 4, FALSE);
@@ -387,14 +399,15 @@ int main(int argc, char *argv[]) {
             //save option
             case CTRL('s'):
                 wclear(main_w);
-                draw_borders(main_w);
+                draw_borders(main_w, 7-in_mode);
                 //ask file name from user
                 print_info(main_w, "Insert filename: ",
                            1, 1, 4, FALSE);
                 //wmove(main_w, 2, 1);
                 usr_str = get_input_str(main_w);
                 //save matrix to file and print info if there are some errors
-                usr_req = matrix_to_file(matrix, mat_y, mat_x, strcat(usr_str, extension));
+                usr_req = matrix_to_file(matrix, mat_y, mat_x,
+                                         strcat(usr_str, extension));
                 if(usr_req == 0) {
                     print_info(main_w, "Ascii art saved!",
                                2, 1, 2, FALSE);
@@ -407,7 +420,8 @@ int main(int argc, char *argv[]) {
                     usr_req = wgetch(main_w);
                     curs_set(1);
                     if(usr_req == 'Y' || usr_req == 'y') {
-                        if(queue_to_file(queue, strcat(usr_str, queue_ext)) == 0)
+                        if(queue_to_file(queue,
+                                         strcat(usr_str, queue_ext)) == 0)
                             print_info(main_w, "Queue saved!",
                                        4, 1, 2, FALSE);
                         else
@@ -453,8 +467,26 @@ int main(int argc, char *argv[]) {
                 break;
         }
         //print data to the screen
-        draw_borders(main_w);
+        draw_borders(main_w, 7-in_mode);
         print_matrix(main_w, matrix, mat_y, mat_x);
+        //print top info
+        wattr_on(main_w, COLOR_PAIR(40), NULL);
+        if(usr_str == NULL)
+            mvwprintw(main_w, 0, 1, "Not saved");
+        else
+            mvwprintw(main_w, 0, 1, "%s", usr_str);
+        wattr_off(main_w, COLOR_PAIR(40), NULL);
+        //print bottom info
+        if(ncols < 77)
+            print_info(main_w, "CTRL+M,R,L,S,Z,Y", nlines-1, 1, 40, FALSE);
+        else {
+            print_info(main_w, "CTRL+M=mode", nlines-1, 1, 40, FALSE);
+            print_info(main_w, "CTRL+R=clear", nlines-1, 14, 40, FALSE);
+            print_info(main_w, "CTRL+L=load", nlines-1, 27, 40, FALSE);
+            print_info(main_w, "CTRL+S=save", nlines-1, 40, 40, FALSE);
+            print_info(main_w, "CTRL+Z=undo", nlines-1, ncols-12, 40, FALSE);
+            print_info(main_w, "CTRL+Y=redo", nlines-1, ncols-25, 40, FALSE);
+        }
         //move to the desired position
         wmove(main_w, y, x);
         //update window content
@@ -462,7 +494,7 @@ int main(int argc, char *argv[]) {
     }
 
     //require ctrl+q to exit, if it reaches this state there was an error
-    return 3;
+    return 4;
 }
 
 /*
@@ -470,14 +502,14 @@ int main(int argc, char *argv[]) {
  */
 void welcome_message(WINDOW* win) {
     //print general info
-    draw_borders(win);
+    draw_borders(win, 7);
     curs_set(0);
     noecho();
     keypad(win, 1);
     nodelay(win, 0);
     mvwprintw(win, 1, 1, " Use arrows or Tab to move");
     mvwprintw(win, 2, 1, " Use CTRL+S to Save");
-    mvwprintw(win, 3, 1, "#Use CTRL+L to Load file");
+    mvwprintw(win, 3, 1, " Use CTRL+L to Load file");
     mvwprintw(win, 4, 1, " Use CTRL+Z to undo");
     mvwprintw(win, 5, 1, " Use CTRL+Y for redo");
     mvwprintw(win, 6, 1, " Use CTRL+R to Reset");

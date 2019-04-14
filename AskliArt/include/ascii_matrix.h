@@ -248,7 +248,7 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
         return NULL;
     }
     //read matrix size
-    while((ch = fgetc(fp)) != EOF) {
+    while(fgetc(fp) != EOF) {
         if(ch == '\n') {
             (*mat_y)++;
             already_get_x = TRUE;
@@ -271,7 +271,6 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
             x++;
         matrix[y][x] = ch;
     }
-
     fclose(fp);
 
     return matrix;
