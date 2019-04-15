@@ -133,6 +133,23 @@ q_char* getLastQ_char(q_char* head) {
     return head;
 }
 
+void printQ_char_stdout(q_char* head) {
+    printf("queue:\n");
+    if(head == NULL) {
+        printf("Void!\n");
+        return;
+    }
+    while(head != NULL) {
+        printf("%c[%d,%d]", head->value, head->y, head->x);
+        if(head->next != NULL)
+            printf(", ");
+        else
+            printf(".");
+        head = head->next;
+    }
+    printf("\n");
+}
+
 /*
  * write into "filename" the queue, return 0 on success, 1 on nil error, 2 on IO
  */

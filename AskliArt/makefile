@@ -15,8 +15,6 @@ SRC=askli_art.c
 # name of the executable
 EXC=askliart
 
-
-
 all: clean_screen compile run clean
 
 compile:

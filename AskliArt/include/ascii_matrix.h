@@ -160,12 +160,12 @@ void print_matrix(WINDOW* win, int** matrix, int mat_y, int mat_x) {
 void print_matrix_stdout(int** matrix, int mat_y, int mat_x) {
     int y, x;
 
-    if(matrix == NULL)
+    if(matrix == NULL || mat_y == 0 || mat_y == 0)
         return;
     printf("+");
-    for(x = 1; x < mat_x-1; x++)
+    for(x = 0; x < mat_x; x++)
         printf("-");
-    printf("+");
+    printf("+\n");
     for(y = 0; y < mat_y; y++) {
         printf("|");
         for(x = 0; x < mat_x; x++) {
@@ -176,8 +176,8 @@ void print_matrix_stdout(int** matrix, int mat_y, int mat_x) {
         }
         printf("|\n");
     }
-    printf("\n+");
-    for(x = 1; x < mat_x-1; x++)
+    printf("+");
+    for(x = 0; x < mat_x; x++)
         printf("-");
     printf("+\n");
 
@@ -224,7 +224,6 @@ int matrix_to_file(int** matrix, int mat_y, int mat_x, char* filename) {
     return 0;
 }
 
-//-----------------------------------TODO-------------------------------------//
 /*
  * return a pointer to the matrix, and mat_y, mat_x via reference
  */
@@ -247,6 +246,7 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
         *mat_x = -1;
         return NULL;
     }
+    //TODO OPTIMIZE READ AND RE-READ
     //read matrix size
     while(fgetc(fp) != EOF) {
         if(ch == '\n') {
