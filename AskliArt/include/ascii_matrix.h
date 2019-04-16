@@ -22,6 +22,9 @@
 #include <ncurses.h>
 
 //signatures
+typedef struct SELECT_AREA_MATRIX sel_area_mat;
+sel_area_mat init_selection(int, int, int, int);
+void print_selection_matrix(WINDOW*, sel_area_mat, int**, int, int);
 int isAlphaNum(int);
 int is_void_matrix(int**, int, int);
 int** init_matrix(int, int);
@@ -33,6 +36,48 @@ int matrix_to_file(int**, int, int, char*);
 int** file_to_matrix(char*, int*, int*);
 
 
+
+struct SELECT_AREA_MATRIX {
+    int start_y; //top left y
+    int start_x; //top left x
+    int end_y;   //bottom right y
+    int end_x;   //bottom right x
+};
+
+/*
+ * Initialize a new selection struct that store selection coordinates
+ */
+sel_area_mat init_selection(int y0, int x0, int yn, int xn) {
+    sel_area_mat sel;
+    
+    sel.start_y = y0;
+    sel.start_x = x0;
+    sel.end_y = yn;
+    sel.end_x = xn;
+    
+    return sel;
+}
+
+void print_selection_matrix(WINDOW* win, sel_area_mat sel, int** mat, 
+                            int mat_y, int mat_x) {
+    int y, x;
+    
+    //check for right input
+    if(sel.start_y > mat_y-1 || sel.start_x > mat_x-1 ||
+       sel.start_y > sel.end_y || sel.start_x > sel.end_x ||
+       mat == NULL || mat_y <= 0 || mat_x <= 0 || win == NULL)
+        return;
+    //print selected area
+    for(y = sel.start_y; y < sel.end_y; y++) {
+        for(x = sel.start_x; x < sel.end_x; x++) {
+            if(mat[y-1][x-1] != 0)
+                mvwprintw(win, y, x, "%c", mat[y-1][x-1]);
+            else
+                mvwprintw(win, y, x, " ");
+        }
+    }
+    
+}
 
 /*
  * return 1 if it's a printable character, else return 0
@@ -134,7 +179,6 @@ int** resize_matrix(int** mat, int* mat_y, int* mat_x, int new_y, int new_x) {
 
 /*
  * print matrix content inside the "win" ncurses window
- * "border" is how many char has to skip to print content
  */
 void print_matrix(WINDOW* win, int** matrix, int mat_y, int mat_x) {
     int y, x;

@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
     int nlines = 0;
     int x = 0;
     int y = 0;
+    //0 = same-position insert, 1 = consecutive insert
     unsigned short int in_mode = 0;
     //user input vars
     int ch = 0;
@@ -57,6 +58,10 @@ int main(int argc, char *argv[]) {
     int mat_y = 0;
     int mat_x = 0;
     bool recent_save = TRUE;
+    //selection vars
+    sel_area_mat sel;
+    //0 = nothing selected, 1 = selection mode, 2 = move selection
+    int sel_mode = 0;
 
     //initialize Ncurses
     initscr();
@@ -78,12 +83,12 @@ int main(int argc, char *argv[]) {
     //initiate input settings
     raw();
     nonl();
+    noecho();
     keypad(main_w, TRUE);
     //cbreak();
     nodelay(main_w, FALSE); //TRUE for more responsive but cpu intensive
     intrflush(main_w, FALSE); //TRUE to inherit from tty drive
     curs_set(1);
-    draw_borders(main_w, 7-in_mode);
 
     //start cursor position
     y = 1; //(int)nlines/2;
@@ -104,14 +109,25 @@ int main(int argc, char *argv[]) {
     //program run forever until user press CTRL+q
     while(1) {
         //print data to the screen
-        draw_borders(main_w, 7-in_mode);
+        if(sel_mode == 0)
+            draw_borders(main_w, 7-in_mode);
+        else
+            draw_borders(main_w, 5-sel_mode);
         print_matrix(main_w, matrix, mat_y, mat_x);
-        //nothing saved or loaded
-        if(usr_str == NULL) {
-            wattr_on(main_w, COLOR_PAIR(60), NULL);
-            mvwprintw(main_w, 0, 1, "Not saved");
-            wattr_off(main_w, COLOR_PAIR(60), NULL);
+        //print selection area and mode
+        if(sel_mode == 1) {
+            wattr_on(main_w, COLOR_PAIR(70), NULL);
+            print_selection_matrix(main_w, sel, matrix, mat_y, mat_x);
+            wattr_off(main_w, COLOR_PAIR(70), NULL);
         }
+        else if(sel_mode == 2) {
+            wattr_on(main_w, COLOR_PAIR(50), NULL);
+            print_selection_matrix(main_w, sel, matrix, mat_y, mat_x);
+            wattr_off(main_w, COLOR_PAIR(50), NULL);
+        }
+        //nothing saved or loaded
+        if(usr_str == NULL)
+            print_info(main_w, "Not saved", 0, 1, 60, FALSE);
         //something saved
         else {
             //but modified
@@ -205,19 +221,31 @@ int main(int argc, char *argv[]) {
                 y = mat_y-1;
                 break;
 
-            //Up Arrow
-            case KEY_UP:
-                if(y-1 >= 1)
-                    y--;
-                break;
-
-            //TODO IMPLEMENT CTRL ARROWS TO SELECT AND MOVE SELECTION
+            //TODO FIX CTRL ARROWS TO SELECT OR MOVE SELECTION
             //ctrl+Up arrow
             case 566:
                 break;
 
             //ctrl+Down arrow
             case 525:
+                if(sel_mode == 0) {
+                    sel_mode = 1;
+                    sel = init_selection(y, x, y+1, x+1);
+                    //mvwprintw(main_w, 1, 1, "sel_mode 1");
+                    //wgetch(main_w);
+                }
+                //if selection was made, user can move it
+                else if(sel_mode == 1) {
+                    sel_mode == 2;
+                    //mvwprintw(main_w, 1, 1, "sel_mode 2");
+                    //wgetch(main_w);
+                }
+                //when the user has done some movements, stop selection mode
+                else if(sel_mode == 2) {
+                    //mvwprintw(main_w, 1, 1, "sel_mode 0");
+                    //wgetch(main_w);
+                    sel_mode = 0;
+                }
                 break;
 
             //ctrl+Right arrow
@@ -227,23 +255,49 @@ int main(int argc, char *argv[]) {
             //ctrl+Left arrow
             case 560:
                 break;
+            
+            //Up Arrow
+            case KEY_UP:
+                if(y-1 >= 1) {
+                    y--;
+                    if(sel_mode == 1) {
+                        if(sel.end_y > sel.start_y)
+                            sel.end_y--;
+                        else
+                            sel.start_y--;
+                    }
+                }
+                break;
 
             //Down Arrow or enter
             case KEY_DOWN:
-                if(y+1 < nlines-1)
+                if(y+1 < nlines-1) {
                     y++;
-                break;
-
-            //Left Arrow or backspace
-            case KEY_LEFT:
-                if(x-1 >= 1)
-                    x--;
+                    if(sel_mode == 1)
+                        sel.end_y++;
+                }
                 break;
 
             //Right Arrow
             case KEY_RIGHT:
-                if(x+1 < ncols-1)
+                if(x+1 < ncols-1) {
                     x++;
+                    if(sel_mode == 1)
+                        sel.end_x++;
+                }
+                break;
+            
+            //Left Arrow or backspace
+            case KEY_LEFT:
+                if(x-1 >= 1) {
+                    x--;
+                    if(sel_mode == 1) {
+                        if(sel.end_x > sel.start_x)
+                            sel.end_x--;
+                        else
+                            sel.start_x--;
+                    }
+                }
                 break;
 
             //tab will do the same as KEY_RIGHT, but for TAB_COUNT times
@@ -298,6 +352,11 @@ int main(int argc, char *argv[]) {
                 if(ncols-1 > mat_x)
                     matrix = resize_matrix(matrix, &mat_y, &mat_x,
                                                    mat_y, ncols-1);
+                //resize selection area
+                if(sel.end_y > nlines-1)
+                    sel.end_y = nlines-1;
+                if(sel.end_x > ncols-1)
+                    sel.end_x = ncols-1;
                 break;
 
             //change input mode (from sequential to insert)
