@@ -49,34 +49,49 @@ struct SELECT_AREA_MATRIX {
  */
 sel_area_mat init_selection(int y0, int x0, int yn, int xn) {
     sel_area_mat sel;
-    
+
     sel.start_y = y0;
     sel.start_x = x0;
     sel.end_y = yn;
     sel.end_x = xn;
-    
+
     return sel;
 }
 
-void print_selection_matrix(WINDOW* win, sel_area_mat sel, int** mat, 
+/*
+ * print to passed window the selected area with inverted colors
+ */
+void print_selection_matrix(WINDOW* win, sel_area_mat sel, int** mat,
                             int mat_y, int mat_x) {
     int y, x;
-    
+    int tmp;
+
     //check for right input
     if(sel.start_y > mat_y-1 || sel.start_x > mat_x-1 ||
-       sel.start_y > sel.end_y || sel.start_x > sel.end_x ||
+       sel.end_y > mat_y-1 || sel.end_x > mat_x-1 ||
        mat == NULL || mat_y <= 0 || mat_x <= 0 || win == NULL)
         return;
+    //excange values
+    if(sel.start_y > sel.end_y) {
+        tmp = sel.start_y;
+        sel.start_y = sel.end_y;
+        sel.end_y = tmp;
+    }
+    if(sel.start_x > sel.end_x) {
+        tmp = sel.start_x;
+        sel.start_x = sel.end_x;
+        sel.end_x = tmp;
+    }
     //print selected area
-    for(y = sel.start_y; y < sel.end_y; y++) {
-        for(x = sel.start_x; x < sel.end_x; x++) {
+    for(y = sel.start_y; y < sel.end_y+1; y++) {
+        for(x = sel.start_x; x < sel.end_x+1; x++) {
             if(mat[y-1][x-1] != 0)
                 mvwprintw(win, y, x, "%c", mat[y-1][x-1]);
             else
                 mvwprintw(win, y, x, " ");
         }
     }
-    
+
 }
 
 /*
@@ -307,13 +322,13 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
     //and re-read file to fill matrix
     /*It's*/ rewind(fp); /*time*/
     while((ch = fgetc(fp)) != EOF) {
+        matrix[y][x] = ch;
         if(ch == '\n') {
             y++;
             x = 0;
         }
         else
             x++;
-        matrix[y][x] = ch;
     }
     fclose(fp);
 

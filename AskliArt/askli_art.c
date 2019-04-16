@@ -25,10 +25,11 @@
 //signatures
 void welcome_message(WINDOW*);
 void print_info(WINDOW*, char*, int, int, int, bool);
+void print_queue(WINDOW*, int, int, int, q_char*, q_char*);
 
 //globals
-unsigned int TERM_MIN_Y = 12;
-unsigned int TERM_MIN_X = 31;
+int TERM_MIN_Y = 12;
+int TERM_MIN_X = 31;
 unsigned short int TERM_HAS_COLORS = 0;
 unsigned short int TAB_COUNT = 4;
 char* extension = ".txt";
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
     bool recent_save = TRUE;
     //selection vars
     sel_area_mat sel;
+    int tmp = 0;
     //0 = nothing selected, 1 = selection mode, 2 = move selection
     int sel_mode = 0;
 
@@ -85,7 +87,6 @@ int main(int argc, char *argv[]) {
     nonl();
     noecho();
     keypad(main_w, TRUE);
-    //cbreak();
     nodelay(main_w, FALSE); //TRUE for more responsive but cpu intensive
     intrflush(main_w, FALSE); //TRUE to inherit from tty drive
     curs_set(1);
@@ -114,6 +115,7 @@ int main(int argc, char *argv[]) {
         else
             draw_borders(main_w, 5-sel_mode);
         print_matrix(main_w, matrix, mat_y, mat_x);
+        print_queue(main_w, nlines-2, 1, ncols-1, queue, move_queue);
         //print selection area and mode
         if(sel_mode == 1) {
             wattr_on(main_w, COLOR_PAIR(70), NULL);
@@ -228,23 +230,34 @@ int main(int argc, char *argv[]) {
 
             //ctrl+Down arrow
             case 525:
-                if(sel_mode == 0) {
-                    sel_mode = 1;
-                    sel = init_selection(y, x, y+1, x+1);
-                    //mvwprintw(main_w, 1, 1, "sel_mode 1");
-                    //wgetch(main_w);
-                }
-                //if selection was made, user can move it
-                else if(sel_mode == 1) {
-                    sel_mode == 2;
-                    //mvwprintw(main_w, 1, 1, "sel_mode 2");
-                    //wgetch(main_w);
-                }
-                //when the user has done some movements, stop selection mode
-                else if(sel_mode == 2) {
-                    //mvwprintw(main_w, 1, 1, "sel_mode 0");
-                    //wgetch(main_w);
-                    sel_mode = 0;
+                switch(sel_mode) {
+                    //enable selection mode
+                    case 0:
+                        sel_mode = 1;
+                        sel = init_selection(y, x, y, x);
+                        break;
+                    //if selection was made, user can move it
+                    case 1:
+                        sel_mode = 2; //yeah, sure, sel_mode == 2 -.-
+                        //if it's necessary, excange values
+                        if(sel.start_y > sel.end_y) {
+                            tmp = sel.start_y;
+                            sel.start_y = sel.end_y;
+                            sel.end_y = tmp;
+                        }
+                        if(sel.start_x > sel.end_x) {
+                            tmp = sel.start_x;
+                            sel.start_x = sel.end_x;
+                            sel.end_x = tmp;
+                        }
+                        break;
+                    //when the user has done some movements, stop selection mode
+                    case 2:
+                        sel_mode = 0;
+                        break;
+                    default:
+                        sel_mode = 0;
+                        break;
                 }
                 break;
 
@@ -255,17 +268,13 @@ int main(int argc, char *argv[]) {
             //ctrl+Left arrow
             case 560:
                 break;
-            
+
             //Up Arrow
             case KEY_UP:
                 if(y-1 >= 1) {
                     y--;
-                    if(sel_mode == 1) {
-                        if(sel.end_y > sel.start_y)
-                            sel.end_y--;
-                        else
-                            sel.start_y--;
-                    }
+                    if(sel_mode == 1)
+                        sel.end_y--;
                 }
                 break;
 
@@ -286,25 +295,24 @@ int main(int argc, char *argv[]) {
                         sel.end_x++;
                 }
                 break;
-            
+
             //Left Arrow or backspace
             case KEY_LEFT:
                 if(x-1 >= 1) {
                     x--;
-                    if(sel_mode == 1) {
-                        if(sel.end_x > sel.start_x)
-                            sel.end_x--;
-                        else
-                            sel.start_x--;
-                    }
+                    if(sel_mode == 1)
+                        sel.end_x--;
                 }
                 break;
 
             //tab will do the same as KEY_RIGHT, but for TAB_COUNT times
             case CTRL('i'):
                 for(int tab_c = 0; tab_c < TAB_COUNT-1; tab_c++) {
-                    if(x+1 < ncols-1)
+                    if(x+1 < ncols-1) {
                         x++;
+                        if(sel_mode == 1)
+                            sel.end_x++;
+                    }
                     else
                         break;
                 }
@@ -313,8 +321,11 @@ int main(int argc, char *argv[]) {
             //shift+tab will do the same as KEY_LEFT, but for TAB_COUNT times
             case KEY_BTAB:
                 for(int tab_c = 0; tab_c < TAB_COUNT-1; tab_c++) {
-                    if(x-1 >= 1)
+                    if(x-1 >= 1) {
                         x--;
+                        if(sel_mode == 1)
+                            sel.end_x--;
+                    }
                     else
                         break;
                 }
@@ -323,17 +334,26 @@ int main(int argc, char *argv[]) {
             //shift+home returns at the start of the line
             case KEY_SHOME:
                 x = 1;
+                if(sel_mode == 1) {
+                    sel.end_y = 1;
+                    sel.end_x = 1;
+                }
                 break;
 
             //shift+end geos at the end of the line
             case KEY_SEND:
                 x = mat_x-1;
+                if(sel_mode == 1)
+                    sel.end_x = 1;
                 break;
 
             //backspace will do the same as KEY_LEFT
             case KEY_BACKSPACE:
-                if(x-1 >= 1)
+                if(x-1 >= 1) {
                     x--;
+                    if(sel_mode == 1)
+                        sel.end_x--;
+                }
                 break;
 
             //window resize management
@@ -353,10 +373,14 @@ int main(int argc, char *argv[]) {
                     matrix = resize_matrix(matrix, &mat_y, &mat_x,
                                                    mat_y, ncols-1);
                 //resize selection area
+                if(sel.start_y > nlines-1)
+                    sel.start_y = nlines-2;
+                if(sel.start_x > ncols-1)
+                    sel.start_x = ncols-2;
                 if(sel.end_y > nlines-1)
-                    sel.end_y = nlines-1;
+                    sel.end_y = nlines-2;
                 if(sel.end_x > ncols-1)
-                    sel.end_x = ncols-1;
+                    sel.end_x = ncols-2;
                 break;
 
             //change input mode (from sequential to insert)
@@ -372,15 +396,16 @@ int main(int argc, char *argv[]) {
             //undo
             case CTRL('z'):
                 //clear last input
-                mvwprintw(main_w, y, x, " ");
+                //TODO FIX LAST AND FIRST
                 //remove from matrix
                 matrix[y-1][x-1] = 0;
                 //check if there is a queue
                 if(move_queue == NULL)
                     break;
                 //move queue pointer to the previous input
-                if(move_queue->prev != NULL) {
-                    move_queue = move_queue->prev;
+                if(move_queue != NULL) {
+                    if(move_queue->prev != NULL)
+                        move_queue = move_queue->prev;
                     //and is inside borders
                     if(move_queue->y < nlines-1 && move_queue->x < ncols-1) {
                         //save the old character
@@ -399,16 +424,15 @@ int main(int argc, char *argv[]) {
                 if(move_queue == NULL)
                     break;
                 //move queue pointer to the next input
-                if(move_queue->next != NULL) {
-                    move_queue = move_queue->next;
+                if(move_queue != NULL) {
+                    if(move_queue->next != NULL)
+                        move_queue = move_queue->next;
                     //and is inside borders
                     if(move_queue->y < nlines-1 && move_queue->x < ncols-1) {
                         //print the redo char
                         usr_req = move_queue->value;
                         y = move_queue->y;
                         x = move_queue->x;
-                        wmove(main_w, y, x);
-                        //mvwprintw(main_w, y, x, "%c", usr_req);
                         //update matrix content
                         matrix[y-1][x-1] = usr_req;
                     }
@@ -435,6 +459,8 @@ int main(int argc, char *argv[]) {
                     mat_y = nlines-1;
                     mat_x = ncols-1;
                     matrix = init_matrix(mat_y, mat_x);
+                    sel_mode = 0;
+                    sel = init_selection(y, x, y, x);
                     if(matrix != NULL) {
                         print_info(main_w, "New matrix created",
                                    2, 1, 2, FALSE);
@@ -487,15 +513,16 @@ int main(int argc, char *argv[]) {
                 }
                 break;
 
-            //TODO FIX LOAD QUEUE FROM FILE
             //load option
             case CTRL('l'):
                 wclear(main_w);
                 draw_borders(main_w, 7-in_mode);
                 //request file name from user
-                print_info(main_w, "Load filename: ",
+                print_info(main_w, "Load filename, Enter to return: ",
                            1, 1, 4, FALSE);
                 usr_str = get_input_str(main_w);
+                if(usr_str == NULL)
+                    break;
                 free_matrix(matrix, mat_y);
                 matrix = file_to_matrix(strcat(usr_str, extension),
                                         &mat_y, &mat_x);
@@ -509,6 +536,7 @@ int main(int argc, char *argv[]) {
                     curs_set(0);
                     usr_req = wgetch(main_w);
                     curs_set(1);
+                    //TODO FIX LOAD QUEUE
                     //read queue file, if present,
                     //and append its content to the current queue
                     if(usr_req == 'Y' || usr_req == 'y')
@@ -541,39 +569,49 @@ int main(int argc, char *argv[]) {
                 //save matrix to file and print info if there are some errors
                 usr_req = matrix_to_file(matrix, usr_max_y, usr_max_x,
                                          strcat(usr_str, extension));
-                if(usr_req == 0) {
-                    print_info(main_w, "Ascii art saved!",
-                               2, 1, 2, FALSE);
-                    recent_save = TRUE;
-                    //ask if user want to save undo/redo queue
-                    print_info(main_w, "Also save queue? [Y/n]",
-                               3, 1, 4, FALSE);
-                    wrefresh(main_w);
-                    curs_set(0);
-                    usr_req = wgetch(main_w);
-                    curs_set(1);
-                    if(usr_req == 'Y' || usr_req == 'y') {
-                        if(queue_to_file(queue,
-                                         strcat(usr_str, queue_ext)) == 0)
-                            print_info(main_w, "Queue saved!",
-                                       4, 1, 2, FALSE);
-                        else
-                            print_info(main_w, "Error on save queue!",
-                                       4, 1, 1, FALSE);
-                    }
-                }
-                else if(usr_req == 1) {
-                    print_info(main_w, "Error nil on save!",
-                               2, 1, 1, FALSE);
-                    free(usr_str);
-                    usr_str = NULL;
-                }
-                else if(usr_req == 2) {
-                    print_info(main_w, "Error on save file!",
-                               2, 1, 1, TRUE);
-                    wgetch(main_w);
-                    free(usr_str);
-                    usr_str = NULL;
+                switch(usr_req) {
+                    case 0:
+                        print_info(main_w, "Ascii art saved!",
+                                   2, 1, 2, FALSE);
+                        recent_save = TRUE;
+                        //ask if user want to save undo/redo queue
+                        print_info(main_w, "Also save queue? [Y/n]",
+                                   3, 1, 4, FALSE);
+                        wrefresh(main_w);
+                        curs_set(0);
+                        usr_req = wgetch(main_w);
+                        curs_set(1);
+                        if(usr_req == 'Y' || usr_req == 'y') {
+                            if(queue_to_file(queue,
+                                             strcat(usr_str, queue_ext)) == 0)
+                                print_info(main_w, "Queue saved!",
+                                           4, 1, 2, FALSE);
+                            else
+                                print_info(main_w, "Error on save queue!",
+                                           4, 1, 1, FALSE);
+                        }
+                        break;
+                    case 1:
+                        print_info(main_w, "Error NULL on save!",
+                                   2, 1, 1, FALSE);
+                        wgetch(main_w);
+                        free(usr_str);
+                        usr_str = NULL;
+                        break;
+                    case 2:
+                        print_info(main_w, "Error on save file!",
+                                   2, 1, 1, TRUE);
+                        wgetch(main_w);
+                        free(usr_str);
+                        usr_str = NULL;
+                        break;
+                    default:
+                        print_info(main_w, "Uknown error on save!",
+                                   2, 1, 1, TRUE);
+                        wgetch(main_w);
+                        free(usr_str);
+                        usr_str = NULL;
+                        break;
                 }
                 wrefresh(main_w);
                 wclear(main_w);
@@ -622,8 +660,8 @@ void welcome_message(WINDOW* win) {
     draw_borders(win, 7);
     curs_set(0);
     noecho();
-    keypad(win, 1);
-    nodelay(win, 0);
+    keypad(win, TRUE);
+    nodelay(win, FALSE);
     mvwprintw(win, 1, 1, " Use Arrows to move");
     mvwprintw(win, 2, 1, " (or Tab, End, Home + Shift)");
     mvwprintw(win, 3, 1, " Use CTRL+S to Save");
@@ -668,5 +706,27 @@ void print_info(WINDOW* win, char* msg, int y, int x, int dye, bool important) {
         wattr_off(win, COLOR_PAIR(dye), NULL);
     if(important)
         wattr_off(win, A_BOLD, NULL);
+
+}
+
+/*
+ * print queue content as 1 line at bottom
+ */
+void print_queue(WINDOW* win, int y, int x, int max_x, q_char* q, q_char* cur) {
+
+    if(win == NULL || q == NULL || cur == NULL)
+        return;
+    while(q != NULL && x < max_x) {
+        if(q->value == cur->value && q->y == cur->y && q->x == cur->x &&
+           q->next == cur->next && q->prev == cur->prev)
+            wattr_on(win, COLOR_PAIR(30), NULL);
+        mvwprintw(win, y, x, "%c", q->value);
+        if(q->value == cur->value && q->y == cur->y && q->x == cur->x &&
+           q->next == cur->next && q->prev == cur->prev)
+            wattr_off(win, COLOR_PAIR(30), NULL);
+        if(x+2 < max_x)
+            x = x+2;
+        q = q->next;
+    }
 
 }

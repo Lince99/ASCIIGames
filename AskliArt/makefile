@@ -1,6 +1,6 @@
 #Copyright (c) 2019 Lince99 under MIT license
 
-CC=gcc -Wall -Os
+CC=gcc -Wall -Os -O3
 CC+= -faggressive-loop-optimizations -fcombine-stack-adjustments
 CC+= -fexpensive-optimizations -falign-functions -falign-jumps
 CC+= -falign-labels -falign-loops -floop-nest-optimize

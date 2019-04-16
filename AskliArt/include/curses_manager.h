@@ -131,6 +131,9 @@ char* get_input_str(WINDOW* screen) {
     raw();
     nonl();
     keypad(screen, 1);
+    //if no input was detected, return NULL
+    if(strlen(str) == 0)
+        return NULL;
 
     return str;
 }
