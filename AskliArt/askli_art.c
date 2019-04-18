@@ -223,7 +223,7 @@ int main(int argc, char *argv[]) {
                 y = mat_y-1;
                 break;
 
-            //TODO FIX CTRL ARROWS TO SELECT OR MOVE SELECTION
+            //TODO ADD CTRL ARROWS TO MOVE SELECTION
             //ctrl+Up arrow
             case 566:
                 break;
@@ -395,38 +395,35 @@ int main(int argc, char *argv[]) {
 
             //undo
             case CTRL('z'):
-                //clear last input
-                //TODO FIX LAST AND FIRST
-                //remove from matrix
+                //remove from matrix last input
                 matrix[y-1][x-1] = 0;
                 //check if there is a queue
-                if(move_queue == NULL)
+                if(queue == NULL)
                     break;
                 //move queue pointer to the previous input
                 if(move_queue != NULL) {
-                    if(move_queue->prev != NULL)
-                        move_queue = move_queue->prev;
                     //and is inside borders
                     if(move_queue->y < nlines-1 && move_queue->x < ncols-1) {
-                        //save the old character
+                        //load the old character
                         usr_req = move_queue->value;
                         y = move_queue->y;
                         x = move_queue->x;
                         //update matrix content
                         matrix[y-1][x-1] = usr_req;
                     }
+                    move_queue = move_queue->prev;
                 }
+                else
+                    move_queue = queue;
                 recent_save = FALSE;
                 break;
 
             //redo
             case CTRL('y'):
-                if(move_queue == NULL)
+                if(queue == NULL)
                     break;
                 //move queue pointer to the next input
                 if(move_queue != NULL) {
-                    if(move_queue->next != NULL)
-                        move_queue = move_queue->next;
                     //and is inside borders
                     if(move_queue->y < nlines-1 && move_queue->x < ncols-1) {
                         //print the redo char
@@ -436,7 +433,11 @@ int main(int argc, char *argv[]) {
                         //update matrix content
                         matrix[y-1][x-1] = usr_req;
                     }
+                    if(move_queue->next != NULL)
+                        move_queue = move_queue->next;
                 }
+                else
+                    move_queue = queue;
                 recent_save = FALSE;
                 break;
 
