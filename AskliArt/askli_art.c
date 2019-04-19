@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
         else
             draw_borders(main_w, 5-sel_mode);
         print_matrix(main_w, matrix, mat_y, mat_x);
-        print_queue(main_w, nlines-2, 1, ncols-1, queue, move_queue);
+        //print_queue(main_w, nlines-2, 1, ncols-1, queue, move_queue);
         //print selection area and mode
         if(sel_mode == 1) {
             wattr_on(main_w, COLOR_PAIR(70), NULL);
@@ -176,9 +176,6 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        //resize the window UNCOMMENT THIS IF KEY_RESIZE doesn't work
-        //getmaxyx(stdscr, nlines, ncols);
-
         switch(ch) {
             //detect quit command
             case CTRL('q'):
@@ -198,11 +195,11 @@ int main(int argc, char *argv[]) {
                     //stop Ncurses
                     endwin();
                     //print to stdscr the queue content
-                    printQ_char_stdout(queue);
+                    //printQ_char_stdout(queue);
                     //free undo and redo queue
                     freeQ_char(queue);
                     //print to stdscr the matrix content
-                    print_matrix_stdout(matrix, usr_max_y, usr_max_x);
+                    //print_matrix_stdout(matrix, usr_max_y, usr_max_x);
                     //free ascii matrix
                     free_matrix(matrix, mat_y);
                     //and exit from program
@@ -238,7 +235,7 @@ int main(int argc, char *argv[]) {
                         break;
                     //if selection was made, user can move it
                     case 1:
-                        sel_mode = 2; //yeah, sure, sel_mode == 2 -.-
+                        sel_mode = 2;
                         //if it's necessary, excange values
                         if(sel.start_y > sel.end_y) {
                             tmp = sel.start_y;

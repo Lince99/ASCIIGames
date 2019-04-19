@@ -195,7 +195,6 @@ q_char* file_to_queue(q_char* queue, char* filename) {
     //read line per line
     while(fscanf(fp, "'%c' %d %d\n", &value, &y, &x) != EOF) {
         q = pushQ_char(q, value, y, x);
-        //printf("r= %d %d %d\n", value, y, x); //DEBUG
         queue_dim++;
     }
 

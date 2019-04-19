@@ -243,7 +243,7 @@ void print_matrix_stdout(int** matrix, int mat_y, int mat_x) {
 }
 
 /*
- * free matrix memory, and return 1 on success, 0 on error
+ * free matrix memory
  */
 void free_matrix(int** matrix, int mat_y) {
 
@@ -317,8 +317,10 @@ int** file_to_matrix(char* filename, int* mat_y, int* mat_x) {
     }
     //create matrix
     matrix = init_matrix(*mat_y, *mat_x);
-    if(matrix == NULL)
+    if(matrix == NULL) {
+        fclose(fp);
         return 0;
+    }
     //and re-read file to fill matrix
     /*It's*/ rewind(fp); /*time*/
     while((ch = fgetc(fp)) != EOF) {
